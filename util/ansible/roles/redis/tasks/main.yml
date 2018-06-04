@@ -1,13 +1,8 @@
 ---
   - name: Install Redis
-    become: true
     apt: package="{{ item }}" state=latest
     with_items:
      - redis-server
 
-  - name: Set Redis service name
-    set_fact:
-      redis_service_name: "{{ 'redis-server' if ansible_distribution == 'Ubuntu' and ansible_distribution_release == 'trusty' else 'redis' }}"
-
   - name: Restart Redis service
-    service: name="{{ redis_service_name }}" state=restarted
+    service: name="redis" state=restarted

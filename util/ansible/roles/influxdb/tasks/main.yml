@@ -26,7 +26,6 @@
   register: influx_installed
 
 - name: Fix permissions on InfluxDB data folder
-  become: true
   file: path="/var/lib/influxdb" state=directory owner=influxdb group=influxdb recurse=true
 
 - name: Lock down InfluxDB to localhost requests
@@ -42,8 +41,3 @@
 
 - name: Pause to allow InfluxDB to spin up
   wait_for: port=8086 delay=5
-
-- name: Set Up InfluxDB
-  become: true
-  become_user: azuracast
-  shell: php {{ util_base }}/cli.php azuracast:setup:influx

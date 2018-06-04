@@ -1,12 +1,11 @@
 <?php
-namespace AzuraCast\Sync;
+namespace AzuraCast\Sync\Task;
 
 use Doctrine\ORM\EntityManager;
-use Entity;
 use InfluxDB\Database;
-use Slim\Container;
+use Entity;
 
-class Analytics extends SyncAbstract
+class Analytics extends TaskAbstract
 {
     /** @var EntityManager */
     protected $em;
@@ -21,6 +20,23 @@ class Analytics extends SyncAbstract
     }
 
     public function run($force = false)
+    {
+        /** @var Entity\Repository\SettingsRepository $settings_repo */
+        $settings_repo = $this->em->getRepository(Entity\Settings::class);
+
+        $analytics_level = $settings_repo->getSetting('analytics', Entity\Analytics::LEVEL_ALL);
+
+        if ($analytics_level === Entity\Analytics::LEVEL_NONE) {
+            $this->_purgeAnalytics();
+            $this->_purgeListeners();
+        } else if ($analytics_level === Entity\Analytics::LEVEL_NO_IP) {
+            $this->_purgeListeners();
+        } else {
+            $this->_clearOldAnalytics();
+        }
+    }
+
+    protected function _clearOldAnalytics()
     {
         // Clear out any non-daily statistics.
         $this->em->createQuery('DELETE FROM Entity\Analytics a WHERE a.type != :type')
@@ -91,5 +107,19 @@ class Analytics extends SyncAbstract
         }
 
         $this->em->flush();
+    }
+
+    protected function _purgeAnalytics()
+    {
+        $this->em->createQuery('DELETE FROM Entity\Analytics a')
+            ->execute();
+
+        $this->influx->query('DROP SERIES FROM /.*/');
+    }
+
+    protected function _purgeListeners()
+    {
+        $this->em->createQuery('DELETE FROM Entity\Listener l')
+            ->execute();
     }
 }

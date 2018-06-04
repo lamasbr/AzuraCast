@@ -4,7 +4,7 @@ namespace Controller\Stations;
 use App\Cache;
 use App\Flash;
 use App\Mvc\View;
-use AzuraCast\Sync\RadioAutomation;
+use AzuraCast\Sync\Task\RadioAutomation;
 use Doctrine\ORM\EntityManager;
 use Entity;
 use App\Http\Request;
@@ -250,8 +250,17 @@ class ReportsController
 
     public function listenersAction(Request $request, Response $response): Response
     {
+        /** @var View $view */
+        $view = $request->getAttribute('view');
+
         /** @var Entity\Repository\SettingsRepository $settings_repo */
         $settings_repo = $this->em->getRepository(Entity\Settings::class);
+
+        $analytics_level = $settings_repo->getSetting('analytics', Entity\Analytics::LEVEL_ALL);
+
+        if ($analytics_level !== Entity\Analytics::LEVEL_ALL) {
+            return $view->renderToResponse($response, 'stations/reports/restricted');
+        }
 
         if (!empty($request->getParam('gmaps_api_key'))) {
 
@@ -260,9 +269,6 @@ class ReportsController
             $this->flash->alert('<b>Google Maps API key updated!</b>', 'green');
             return $response->redirectHere();
         }
-
-        /** @var View $view */
-        $view = $request->getAttribute('view');
 
         return $view->renderToResponse($response, 'stations/reports/listeners', [
             'gmaps_api_key' => $settings_repo->getSetting('gmaps_api_key', null),
