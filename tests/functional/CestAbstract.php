@@ -1,65 +1,62 @@
 <?php
-use Slim\App;
-use Interop\Container\ContainerInterface;
-use Doctrine\ORM\EntityManagerInterface;
-use Entity;
+
+use App\Doctrine\ReloadableEntityManagerInterface;
+use App\Entity;
+use Psr\Container\ContainerInterface;
 
 abstract class CestAbstract
 {
-    /**
-     * @var ContainerInterface
-     */
-    protected $di;
+    protected ContainerInterface $di;
 
-    /**
-     * @var EntityManagerInterface
-     */
-    protected $em;
+    protected App\Environment $environment;
 
-    protected function _inject(\App\Tests\Module $tests_module)
+    protected Entity\Repository\SettingsRepository $settingsRepo;
+
+    protected Entity\Repository\StationRepository $stationRepo;
+
+    protected ReloadableEntityManagerInterface $em;
+
+    protected string $login_username = 'azuracast@azuracast.com';
+    protected string $login_password = 'AzuraCastFunctionalTests!';
+    private ?Entity\Station $test_station = null;
+
+    protected function _inject(App\Tests\Module $tests_module): void
     {
         $this->di = $tests_module->container;
         $this->em = $tests_module->em;
+
+        $this->settingsRepo = $this->di->get(Entity\Repository\SettingsRepository::class);
+        $this->stationRepo = $this->di->get(Entity\Repository\StationRepository::class);
+        $this->environment = $this->di->get(App\Environment::class);
     }
 
-    public function _before(FunctionalTester $I)
-    {}
-
-    public function _after(FunctionalTester $I)
+    public function _after(FunctionalTester $I): void
     {
-        /** @var \App\Auth $auth */
-        $auth = $this->di[\App\Auth::class];
-        $auth->logout();
+        $this->em->clear();
 
-        if ($this->test_station instanceof Entity\Station)
-        {
-            /** @var Entity\Repository\StationRepository $station_repo */
-            $station_repo = $this->em->getRepository(Entity\Station::class);
+        if (null !== $this->test_station) {
+            $testStation = $this->getTestStation();
 
-            $this->test_station = $station_repo->destroy(
-                $this->test_station,
-                $this->di[\AzuraCast\Radio\Adapters::class],
-                $this->di[\AzuraCast\Radio\Configuration::class]
-            );
+            $this->stationRepo->destroy($testStation);
+            $this->test_station = null;
+
+            $this->em->clear();
         }
     }
 
-    protected $login_username = 'azuracast@azuracast.com';
-    protected $login_password = 'AzuraCastFunctionalTests!';
-    protected $login_cookie = null;
-
-    /** @var Entity\Station|null */
-    protected $test_station = null;
-
-    protected function setupIncomplete(FunctionalTester $I)
+    protected function setupIncomplete(FunctionalTester $I): void
     {
-        $settings_repo = $this->em->getRepository(Entity\Settings::class);
-        $settings_repo->setSetting('setup_complete', 0);
+        $I->wantTo('Start with an incomplete setup.');
 
         $this->_cleanTables();
+
+        $settings = $this->settingsRepo->readSettings();
+        $settings->setSetupCompleteTime(0);
+
+        $this->settingsRepo->writeSettings($settings);
     }
 
-    protected function setupComplete(FunctionalTester $I)
+    protected function setupComplete(FunctionalTester $I): void
     {
         $this->_cleanTables();
 
@@ -68,90 +65,136 @@ abstract class CestAbstract
         // Create administrator account.
         $role = new Entity\Role;
         $role->setName('Super Administrator');
-
         $this->em->persist($role);
-        $this->em->flush();
 
         $rha = new Entity\RolePermission($role);
-        $rha->setActionName('administer all');
+        $rha->setActionName(App\Acl::GLOBAL_ALL);
         $this->em->persist($rha);
 
         // Create user account.
         $user = new Entity\User;
         $user->setName('AzuraCast Test User');
         $user->setEmail($this->login_username);
-        $user->setAuthPassword($this->login_password);
-
+        $user->setNewPassword($this->login_password);
         $user->getRoles()->add($role);
+        $user->setLocale('en_US.UTF-8');
 
         $this->em->persist($user);
         $this->em->flush();
 
-        $this->di[\AzuraCast\Acl\StationAcl::class]->reload();
+        $this->di->get(App\Acl::class)->reload();
 
-        // Create station.
-        $frontends = \AzuraCast\Radio\Adapters::getFrontendAdapters();
-        $backends = \AzuraCast\Radio\Adapters::getBackendAdapters();
+        $test_station = new Entity\Station();
+        $test_station->setName('Functional Test Radio');
+        $test_station->setDescription('Test radio station.');
+        $test_station->setFrontendType(App\Radio\Adapters::DEFAULT_FRONTEND);
+        $test_station->setBackendType(App\Radio\Adapters::DEFAULT_BACKEND);
 
-        $station_info = [
-            'id'            => 25,
-            'name'          => 'Functional Test Radio',
-            'description'   => 'Test radio station.',
-            'frontend_type' => $frontends['default'],
-            'backend_type'  => $backends['default'],
-        ];
-
-        /** @var Entity\Repository\StationRepository $station_repo */
-        $station_repo = $this->em->getRepository(\Entity\Station::class);
-
-        $this->test_station = $station_repo->create(
-            $station_info,
-            $this->di[\AzuraCast\Radio\Adapters::class],
-            $this->di[\AzuraCast\Radio\Configuration::class]
-        );
+        $this->test_station = $this->stationRepo->create($test_station);
 
         // Set settings.
-        $settings_repo = $this->em->getRepository(\Entity\Settings::class);
-        $settings_repo->setSetting('setup_complete', time());
-        $settings_repo->setSetting('base_url', 'localhost');
+        $settings = $this->settingsRepo->readSettings();
+        $settings->updateSetupComplete();
+        $settings->setBaseUrl('http://localhost');
+        $this->settingsRepo->writeSettings($settings);
     }
 
-    protected function _cleanTables()
+    protected function getTestStation(): Entity\Station
     {
-        $clean_tables = ['Entity\User', 'Entity\Role', 'Entity\Station'];
-        foreach($clean_tables as $clean_table)
-            $this->em->createQuery('DELETE FROM '.$clean_table.' t')->execute();
+        if ($this->test_station instanceof Entity\Station) {
+            $testStation = $this->em->refetch($this->test_station);
+            if ($testStation instanceof Entity\Station) {
+                return $testStation;
+            }
 
-        /** @var \App\Auth $auth */
-        $auth = $this->di[\App\Auth::class];
-        $auth->logout();
+            $this->test_station = null;
+        }
+
+        throw new RuntimeException('Test station is not established.');
     }
 
-    protected function login(FunctionalTester $I)
+    protected function uploadTestSong(): Entity\StationMedia
     {
-        $I->wantTo('Log in to the application.');
+        $testStation = $this->getTestStation();
+
+        $songSrc = '/var/azuracast/www/resources/error.mp3';
+
+        $storageLocation = $testStation->getMediaStorageLocation();
+
+        $storageFs = $storageLocation->getFilesystem();
+        $storageFs->upload($songSrc, 'test.mp3');
+
+        /** @var Entity\Repository\StationMediaRepository $mediaRepo */
+        $mediaRepo = $this->di->get(Entity\Repository\StationMediaRepository::class);
+
+        return $mediaRepo->getOrCreate($storageLocation, 'test.mp3');
+    }
+
+    protected function _cleanTables(): void
+    {
+        $clean_tables = [
+            Entity\User::class,
+            Entity\Role::class,
+            Entity\Station::class,
+            Entity\Settings::class,
+        ];
+
+        foreach ($clean_tables as $clean_table) {
+            $this->em->createQuery('DELETE FROM ' . $clean_table . ' t')->execute();
+        }
+
+        $this->em->clear();
+    }
+
+    protected function login(FunctionalTester $I): void
+    {
+        $this->setupComplete($I);
 
         $I->amOnPage('/');
         $I->seeInCurrentUrl('/login');
 
-        $I->submitForm('#login-form', [
-            'username' => $this->login_username,
-            'password' => $this->login_password,
-        ]);
+        $I->submitForm(
+            '#login-form',
+            [
+                'username' => $this->login_username,
+                'password' => $this->login_password,
+            ]
+        );
 
-        $I->seeInSource('Logged in');
+        $I->seeInSource('Logged In');
     }
 
-    protected function logout(FunctionalTester $I)
-    {
-        if (!empty($this->login_cookie))
-        {
-            $I->wantTo('Log out of the application.');
+    protected function testCrudApi(
+        FunctionalTester $I,
+        string $listUrl,
+        array $createJson = [],
+        array $editJson = []
+    ): void {
+        // Create new record
+        $I->sendPOST($listUrl, $createJson);
 
-            $I->amOnPage('/logout');
-            $I->seeInCurrentUrl('/login');
+        $I->seeResponseCodeIs(200);
 
-            $this->login_cookie = null;
-        }
+        $newRecord = $I->grabDataFromResponseByJsonPath('links.self');
+        $newRecordSelfLink = $newRecord[0];
+
+        // Get single record.
+        $I->sendGET($newRecordSelfLink);
+
+        $I->seeResponseContainsJson($createJson);
+
+        // Modify record.
+        $I->sendPUT($newRecordSelfLink, $editJson);
+
+        // List all records.
+        $I->sendGET($newRecordSelfLink);
+
+        $I->seeResponseContainsJson($editJson);
+
+        // Delete Record
+        $I->sendDELETE($newRecordSelfLink);
+
+        $I->sendGET($newRecordSelfLink);
+        $I->seeResponseCodeIs(404);
     }
 }

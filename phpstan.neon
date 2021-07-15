@@ -1,0 +1,22 @@
+parameters:
+    level: 3
+
+    paths:
+        - src
+
+    bootstrapFiles:
+        - ./util/phpstan.php
+
+    universalObjectCratesClasses:
+        - App\Session\NamespaceInterface
+        - App\View
+
+    ignoreErrors:
+        # Caused by Symfony Validator (perhaps wrongly) returning the interface.
+        - '#Cannot cast Symfony\\Component\\Validator\\ConstraintViolationListInterface to string.#'
+
+    parallel:
+        maximumNumberOfProcesses: 1
+
+includes:
+    - vendor/phpstan/phpstan-doctrine/extension.neon

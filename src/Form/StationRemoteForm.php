@@ -1,0 +1,24 @@
+<?php
+
+namespace App\Form;
+
+use App\Config;
+use App\Entity;
+use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\Serializer\Serializer;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
+
+class StationRemoteForm extends EntityForm
+{
+    public function __construct(
+        EntityManagerInterface $em,
+        Serializer $serializer,
+        ValidatorInterface $validator,
+        Config $config
+    ) {
+        $form_config = $config->get('forms/remote');
+        parent::__construct($em, $serializer, $validator, $form_config);
+
+        $this->entityClass = Entity\StationRemote::class;
+    }
+}

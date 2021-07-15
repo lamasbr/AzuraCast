@@ -9,7 +9,7 @@
     with_items:
      - influxdb
      - mysql
-     - php7.2-fpm
+     - php7.4-fpm
      - nginx
      - redis-server
      - supervisor
@@ -45,8 +45,14 @@
     ignore_errors: True
 
   - name: Remove software
-    apt: pkg="{{ item }}" state=absent force=yes purge=yes
-    with_items:
+
+    apt:
+      name: "{{ packages }}"
+      state: absent
+      force: yes
+      purge: yes
+    vars:
+      packages:
       # Radio software
       - icecast2
       - liquidsoap
@@ -82,6 +88,7 @@
 
       # PHP 7.2
       - php7.2-*
+      - php7.4-*
 
       # MariaDB
       - mariadb-*

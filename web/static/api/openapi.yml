@@ -1,0 +1,3883 @@
+openapi: 3.0.0
+info:
+  title: AzuraCast
+  description: 'AzuraCast is a standalone, turnkey web radio management tool. Radio stations hosted by AzuraCast expose a public API for viewing now playing data, making requests and more.'
+  license:
+    name: 'Apache 2.0'
+    url: 'http://www.apache.org/licenses/LICENSE-2.0.html'
+  version: 0.13.0
+servers:
+  -
+    url: 'https://demo.azuracast.com/api'
+    description: 'AzuraCast Public Demo Server'
+paths:
+  /admin/custom_fields:
+    get:
+      tags:
+        - 'Administration: Custom Fields'
+      description: 'List all current custom fields in the system.'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CustomField'
+        '403':
+          description: 'Access denied'
+      security:
+        -
+          api_key: []
+    post:
+      tags:
+        - 'Administration: Custom Fields'
+      description: 'Create a new custom field.'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CustomField'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomField'
+        '403':
+          description: 'Access denied'
+      security:
+        -
+          api_key: []
+  '/admin/custom_field/{id}':
+    get:
+      tags:
+        - 'Administration: Custom Fields'
+      description: 'Retrieve details for a single custom field.'
+      parameters:
+        -
+          name: id
+          in: path
+          description: ID
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomField'
+        '403':
+          description: 'Access denied'
+      security:
+        -
+          api_key: []
+    put:
+      tags:
+        - 'Administration: Custom Fields'
+      description: 'Update details of a single custom field.'
+      parameters:
+        -
+          name: id
+          in: path
+          description: ID
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CustomField'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Api_Status'
+        '403':
+          description: 'Access denied'
+      security:
+        -
+          api_key: []
+    delete:
+      tags:
+        - 'Administration: Custom Fields'
+      description: 'Delete a single custom field.'
+      parameters:
+        -
+          name: id
+          in: path
+          description: ID
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Api_Status'
+        '403':
+          description: 'Access denied'
+      security:
+        -
+          api_key: []
+  /admin/permissions:
+    get:
+      tags:
+        - 'Administration: Roles'
+      description: 'Return a list of all available permissions.'
+      operationId: d5b93c0462b0833fa0e840b1f5e346c3
+      responses:
+        '200':
+          description: Success
+        '403':
+          description: 'Access denied'
+      security:
+        -
+          api_key: []
+  /internal/relays:
+    get:
+      tags:
+        - 'Administration: Relays'
+      description: 'Returns all necessary information to relay all ''relayable'' stations.'
+      operationId: 8a95959aa86cede6b49a943ea6744d46
+      parameters: []
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Api_Admin_Relay'
+  /admin/roles:
+    get:
+      tags:
+        - 'Administration: Roles'
+      description: 'List all current roles in the system.'
+      operationId: b117c9dc01aa525d0ddd9344f4d30cac
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Role'
+        '403':
+          description: 'Access denied'
+      security:
+        -
+          api_key: []
+    post:
+      tags:
+        - 'Administration: Roles'
+      description: 'Create a new role.'
+      operationId: b3ae4432841b4e93c412d12ec0c664a9
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Role'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Role'
+        '403':
+          description: 'Access denied'
+      security:
+        -
+          api_key: []
+  '/admin/role/{id}':
+    get:
+      tags:
+        - 'Administration: Roles'
+      description: 'Retrieve details for a single current role.'
+      operationId: 353f4f6816f3ca15b207ccd360f743bf
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'Role ID'
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Role'
+        '403':
+          description: 'Access denied'
+      security:
+        -
+          api_key: []
+    put:
+      tags:
+        - 'Administration: Roles'
+      description: 'Update details of a single role.'
+      operationId: 4337def90cce91c8c2d90f4dd44d74c6
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'Role ID'
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Role'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Api_Status'
+        '403':
+          description: 'Access denied'
+      security:
+        -
+          api_key: []
+    delete:
+      tags:
+        - 'Administration: Roles'
+      description: 'Delete a single role.'
+      operationId: c9f6273421106c4bc2542e8f624d6cfd
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'Role ID'
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Api_Status'
+        '403':
+          description: 'Access denied'
+      security:
+        -
+          api_key: []
+  /admin/settings:
+    get:
+      tags:
+        - 'Administration: Settings'
+      description: 'List the current values of all editable system settings.'
+      operationId: f6bfa4aab7bc91da0a78d9edbc4b449f
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Settings'
+        '403':
+          description: 'Access denied'
+      security:
+        -
+          api_key: []
+    put:
+      tags:
+        - 'Administration: Settings'
+      description: 'Update settings to modify any settings provided.'
+      operationId: bd9bccac1cce3ba2951e4dfbf1ef8f6f
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Settings'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Api_Status'
+        '403':
+          description: 'Access denied'
+      security:
+        -
+          api_key: []
+  /admin/stations:
+    get:
+      tags:
+        - 'Administration: Stations'
+      description: 'List all current stations in the system.'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Station'
+        '403':
+          description: 'Access denied'
+      security:
+        -
+          api_key: []
+    post:
+      tags:
+        - 'Administration: Stations'
+      description: 'Create a new station.'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Station'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Station'
+        '403':
+          description: 'Access denied'
+      security:
+        -
+          api_key: []
+  '/admin/station/{id}':
+    get:
+      tags:
+        - 'Administration: Stations'
+      description: 'Retrieve details for a single station.'
+      parameters:
+        -
+          name: id
+          in: path
+          description: ID
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Station'
+        '403':
+          description: 'Access denied'
+      security:
+        -
+          api_key: []
+    put:
+      tags:
+        - 'Administration: Stations'
+      description: 'Update details of a single station.'
+      parameters:
+        -
+          name: id
+          in: path
+          description: ID
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Station'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Api_Status'
+        '403':
+          description: 'Access denied'
+      security:
+        -
+          api_key: []
+    delete:
+      tags:
+        - 'Administration: Stations'
+      description: 'Delete a single station.'
+      parameters:
+        -
+          name: id
+          in: path
+          description: ID
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Api_Status'
+        '403':
+          description: 'Access denied'
+      security:
+        -
+          api_key: []
+  /admin/storage_locations:
+    get:
+      tags:
+        - 'Administration: Storage Locations'
+      description: 'List all current storage locations in the system.'
+      operationId: acdefb6bde5fef7807c9090a54ae35f4
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Api_Admin_StorageLocation'
+        '403':
+          description: 'Access denied'
+      security:
+        -
+          api_key: []
+    post:
+      tags:
+        - 'Administration: Storage Locations'
+      description: 'Create a new storage location.'
+      operationId: 690615420ccff1ff93dfc65d75a223a8
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Api_Admin_StorageLocation'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Api_Admin_StorageLocation'
+        '403':
+          description: 'Access denied'
+      security:
+        -
+          api_key: []
+  '/admin/storage_location/{id}':
+    get:
+      tags:
+        - 'Administration: Storage Locations'
+      description: 'Retrieve details for a single storage location.'
+      operationId: 87704196f58bd67d40c31dd8facd1ac6
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'User ID'
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Api_Admin_StorageLocation'
+        '403':
+          description: 'Access denied'
+      security:
+        -
+          api_key: []
+    put:
+      tags:
+        - 'Administration: Storage Locations'
+      description: 'Update details of a single storage location.'
+      operationId: 6182e6410f5b30e7de42de094be837f8
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'Storage Location ID'
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Api_Admin_StorageLocation'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Api_Status'
+        '403':
+          description: 'Access denied'
+      security:
+        -
+          api_key: []
+    delete:
+      tags:
+        - 'Administration: Storage Locations'
+      description: 'Delete a single storage location.'
+      operationId: 54b173c6d3f00230c9bf903599106110
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'Storage Location ID'
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Api_Status'
+        '403':
+          description: 'Access denied'
+      security:
+        -
+          api_key: []
+  /admin/users:
+    get:
+      tags:
+        - 'Administration: Users'
+      description: 'List all current users in the system.'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+        '403':
+          description: 'Access denied'
+      security:
+        -
+          api_key: []
+    post:
+      tags:
+        - 'Administration: Users'
+      description: 'Create a new user.'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '403':
+          description: 'Access denied'
+      security:
+        -
+          api_key: []
+  '/admin/user/{id}':
+    get:
+      tags:
+        - 'Administration: Users'
+      description: 'Retrieve details for a single current user.'
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'User ID'
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '403':
+          description: 'Access denied'
+      security:
+        -
+          api_key: []
+    put:
+      tags:
+        - 'Administration: Users'
+      description: 'Update details of a single user.'
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'User ID'
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Api_Status'
+        '403':
+          description: 'Access denied'
+      security:
+        -
+          api_key: []
+    delete:
+      tags:
+        - 'Administration: Users'
+      description: 'Delete a single user.'
+      operationId: 45bfe78420f35ac6dd36a33efaecbdbe
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'User ID'
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Api_Status'
+        '403':
+          description: 'Access denied'
+      security:
+        -
+          api_key: []
+  /status:
+    get:
+      tags:
+        - Miscellaneous
+      description: 'Returns an affirmative response if the API is active.'
+      operationId: bc32a129ca3e8ad2060b71bdd90da78d
+      parameters: []
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Api_SystemStatus'
+  /time:
+    get:
+      tags:
+        - Miscellaneous
+      description: 'Returns the time (with formatting) in GMT and the user''s local time zone, if logged in.'
+      operationId: 3092a8238a915a0b6b324f2a90942a94
+      parameters: []
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Api_Time'
+  /nowplaying:
+    get:
+      tags:
+        - 'Now Playing'
+      description: 'Returns a full summary of all stations'' current state.'
+      operationId: fc7ba75e1ae504860545914b115414ad
+      parameters: []
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Api_NowPlaying'
+  '/nowplaying/{station_id}':
+    get:
+      tags:
+        - 'Now Playing'
+      description: 'Returns a full summary of the specified station''s current state.'
+      operationId: 96fc53c2baaace0eaec655bcfba86065
+      parameters:
+        -
+          $ref: '#/components/parameters/station_id_required'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Api_NowPlaying'
+        '404':
+          description: 'Station not found'
+  '/station/{station_id}/art/{media_id}':
+    get:
+      tags:
+        - 'Stations: Media'
+      description: 'Returns the album art for a song, or a generic image.'
+      operationId: 1b9853f0af3c8fbe4d3af9af0e6d1a45
+      parameters:
+        -
+          $ref: '#/components/parameters/station_id_required'
+        -
+          name: media_id
+          in: path
+          description: 'The station media unique ID'
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 'The requested album artwork'
+        '404':
+          description: 'Image not found; generic filler image.'
+  '/station/{station_id}/files':
+    get:
+      tags:
+        - 'Stations: Media'
+      description: 'List all current uploaded files.'
+      parameters:
+        -
+          $ref: '#/components/parameters/station_id_required'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/StationMedia'
+        '403':
+          description: 'Access denied'
+      security:
+        -
+          api_key: []
+    post:
+      tags:
+        - 'Stations: Media'
+      description: 'Upload a new file.'
+      parameters:
+        -
+          $ref: '#/components/parameters/station_id_required'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Api_UploadFile'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StationMedia'
+        '403':
+          description: 'Access denied'
+      security:
+        -
+          api_key: []
+  '/station/{station_id}/file/{id}':
+    get:
+      tags:
+        - 'Stations: Media'
+      description: 'Retrieve details for a single file.'
+      parameters:
+        -
+          $ref: '#/components/parameters/station_id_required'
+        -
+          name: id
+          in: path
+          description: 'Media ID'
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StationMedia'
+        '403':
+          description: 'Access denied'
+      security:
+        -
+          api_key: []
+    put:
+      tags:
+        - 'Stations: Media'
+      description: 'Update details of a single file.'
+      parameters:
+        -
+          $ref: '#/components/parameters/station_id_required'
+        -
+          name: id
+          in: path
+          description: 'Media ID'
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/StationMedia'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Api_Status'
+        '403':
+          description: 'Access denied'
+      security:
+        -
+          api_key: []
+    delete:
+      tags:
+        - 'Stations: Media'
+      description: 'Delete a single file.'
+      parameters:
+        -
+          $ref: '#/components/parameters/station_id_required'
+        -
+          name: id
+          in: path
+          description: 'Media ID'
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Api_Status'
+        '403':
+          description: 'Access denied'
+      security:
+        -
+          api_key: []
+  '/station/{station_id}/history':
+    get:
+      tags:
+        - 'Stations: History'
+      description: 'Return song playback history items for a given station.'
+      operationId: fe481989a4419d377f2c698951d33cb9
+      parameters:
+        -
+          $ref: '#/components/parameters/station_id_required'
+        -
+          name: start
+          in: query
+          description: 'The start date for records, in YYYY-MM-DD format.'
+          required: false
+          schema:
+            type: string
+        -
+          name: end
+          in: query
+          description: 'The end date for records, in YYYY-MM-DD format.'
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Api_DetailedSongHistory'
+        '404':
+          description: 'Station not found'
+        '403':
+          description: 'Access denied'
+      security:
+        -
+          api_key: []
+  /stations:
+    get:
+      tags:
+        - 'Stations: General'
+      description: 'Returns a list of stations.'
+      operationId: ad7bc9e8a7d8356cc3fda373eaa731db
+      parameters: []
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Api_Station'
+  '/station/{station_id}':
+    get:
+      tags:
+        - 'Stations: General'
+      description: 'Return information about a single station.'
+      operationId: dd934e9386f9fbd6ff1e3001f6b48da9
+      parameters:
+        -
+          $ref: '#/components/parameters/station_id_required'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Api_Station'
+        '404':
+          description: 'Station not found'
+  '/station/{station_id}/listeners':
+    get:
+      tags:
+        - 'Stations: Listeners'
+      description: 'Return detailed information about current listeners.'
+      operationId: 55f8ec17b4cf8b8339589705a4d7da24
+      parameters:
+        -
+          $ref: '#/components/parameters/station_id_required'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Api_Listener'
+        '404':
+          description: 'Station not found'
+        '403':
+          description: 'Access denied'
+      security:
+        -
+          api_key: []
+  '/station/{station_id}/mounts':
+    get:
+      tags:
+        - 'Stations: Mount Points'
+      description: 'List all current mount points.'
+      operationId: 146531e6ded994eeaa2a306d92d8b90e
+      parameters:
+        -
+          $ref: '#/components/parameters/station_id_required'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/StationMount'
+        '403':
+          description: 'Access denied'
+      security:
+        -
+          api_key: []
+    post:
+      tags:
+        - 'Stations: Mount Points'
+      description: 'Create a new mount point.'
+      operationId: 8e558e6f9f222bee4ca2157ce699f097
+      parameters:
+        -
+          $ref: '#/components/parameters/station_id_required'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/StationMount'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StationMount'
+        '403':
+          description: 'Access denied'
+      security:
+        -
+          api_key: []
+  '/station/{station_id}/mount/{id}':
+    get:
+      tags:
+        - 'Stations: Mount Points'
+      description: 'Retrieve details for a single mount point.'
+      operationId: 3d9eedb16ec362816994b6d8599f0727
+      parameters:
+        -
+          $ref: '#/components/parameters/station_id_required'
+        -
+          name: id
+          in: path
+          description: 'Streamer ID'
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StationMount'
+        '403':
+          description: 'Access denied'
+      security:
+        -
+          api_key: []
+    put:
+      tags:
+        - 'Stations: Mount Points'
+      description: 'Update details of a single mount point.'
+      operationId: 738b845333262f4aac393c95f50aa1f8
+      parameters:
+        -
+          $ref: '#/components/parameters/station_id_required'
+        -
+          name: id
+          in: path
+          description: 'Streamer ID'
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/StationMount'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Api_Status'
+        '403':
+          description: 'Access denied'
+      security:
+        -
+          api_key: []
+    delete:
+      tags:
+        - 'Stations: Mount Points'
+      description: 'Delete a single mount point.'
+      operationId: 0b2bce55d0fa09ab6ad8142d84aabda0
+      parameters:
+        -
+          $ref: '#/components/parameters/station_id_required'
+        -
+          name: id
+          in: path
+          description: 'StationMount ID'
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Api_Status'
+        '403':
+          description: 'Access denied'
+      security:
+        -
+          api_key: []
+  '/station/{station_id}/playlists':
+    get:
+      tags:
+        - 'Stations: Playlists'
+      description: 'List all current playlists.'
+      parameters:
+        -
+          $ref: '#/components/parameters/station_id_required'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/StationPlaylist'
+        '403':
+          description: 'Access denied'
+      security:
+        -
+          api_key: []
+    post:
+      tags:
+        - 'Stations: Playlists'
+      description: 'Create a new playlist.'
+      parameters:
+        -
+          $ref: '#/components/parameters/station_id_required'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/StationPlaylist'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StationPlaylist'
+        '403':
+          description: 'Access denied'
+      security:
+        -
+          api_key: []
+  '/station/{station_id}/playlist/{id}':
+    get:
+      tags:
+        - 'Stations: Playlists'
+      description: 'Retrieve details for a single playlist.'
+      parameters:
+        -
+          $ref: '#/components/parameters/station_id_required'
+        -
+          name: id
+          in: path
+          description: 'Playlist ID'
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StationPlaylist'
+        '403':
+          description: 'Access denied'
+      security:
+        -
+          api_key: []
+    put:
+      tags:
+        - 'Stations: Playlists'
+      description: 'Update details of a single playlist.'
+      parameters:
+        -
+          $ref: '#/components/parameters/station_id_required'
+        -
+          name: id
+          in: path
+          description: 'Playlist ID'
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/StationPlaylist'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Api_Status'
+        '403':
+          description: 'Access denied'
+      security:
+        -
+          api_key: []
+    delete:
+      tags:
+        - 'Stations: Playlists'
+      description: 'Delete a single playlist relay.'
+      parameters:
+        -
+          $ref: '#/components/parameters/station_id_required'
+        -
+          name: id
+          in: path
+          description: 'Playlist ID'
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Api_Status'
+        '403':
+          description: 'Access denied'
+      security:
+        -
+          api_key: []
+  '/station/{station_id}/podcast/{podcast_id}/episodes':
+    get:
+      tags:
+        - 'Stations: Podcasts'
+      description: 'List all current episodes for a given podcast ID.'
+      parameters:
+        -
+          $ref: '#/components/parameters/station_id_required'
+        -
+          name: podcast_id
+          in: path
+          description: 'Podcast ID'
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Api_PodcastEpisode'
+        '403':
+          description: 'Access denied'
+      security:
+        -
+          api_key: []
+    post:
+      tags:
+        - 'Stations: Podcasts'
+      description: 'Create a new podcast episode.'
+      parameters:
+        -
+          $ref: '#/components/parameters/station_id_required'
+        -
+          name: podcast_id
+          in: path
+          description: 'Podcast ID'
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Api_PodcastEpisode'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Api_PodcastEpisode'
+        '403':
+          description: 'Access denied'
+      security:
+        -
+          api_key: []
+  '/station/{station_id}/podcast/{podcast_id}/episode/{id}':
+    get:
+      tags:
+        - 'Stations: Podcasts'
+      description: 'Retrieve details for a single podcast episode.'
+      parameters:
+        -
+          $ref: '#/components/parameters/station_id_required'
+        -
+          name: podcast_id
+          in: path
+          description: 'Podcast ID'
+          required: true
+          schema:
+            type: string
+        -
+          name: id
+          in: path
+          description: 'Podcast Episode ID'
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Api_PodcastEpisode'
+        '403':
+          description: 'Access denied'
+      security:
+        -
+          api_key: []
+    put:
+      tags:
+        - 'Stations: Podcasts'
+      description: 'Update details of a single podcast episode.'
+      parameters:
+        -
+          $ref: '#/components/parameters/station_id_required'
+        -
+          name: podcast_id
+          in: path
+          description: 'Podcast ID'
+          required: true
+          schema:
+            type: string
+        -
+          name: id
+          in: path
+          description: 'Podcast Episode ID'
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Api_PodcastEpisode'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Api_Status'
+        '403':
+          description: 'Access denied'
+      security:
+        -
+          api_key: []
+    delete:
+      tags:
+        - 'Stations: Podcasts'
+      description: 'Delete a single podcast episode.'
+      parameters:
+        -
+          $ref: '#/components/parameters/station_id_required'
+        -
+          name: podcast_id
+          in: path
+          description: 'Podcast ID'
+          required: true
+          schema:
+            type: string
+        -
+          name: id
+          in: path
+          description: 'Podcast Episode ID'
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Api_Status'
+        '403':
+          description: 'Access denied'
+      security:
+        -
+          api_key: []
+  '/station/{station_id}/podcasts':
+    get:
+      tags:
+        - 'Stations: Podcasts'
+      description: 'List all current podcasts.'
+      parameters:
+        -
+          $ref: '#/components/parameters/station_id_required'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Api_Podcast'
+        '403':
+          description: 'Access denied'
+      security:
+        -
+          api_key: []
+    post:
+      tags:
+        - 'Stations: Podcasts'
+      description: 'Create a new podcast.'
+      parameters:
+        -
+          $ref: '#/components/parameters/station_id_required'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Api_Podcast'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Api_Podcast'
+        '403':
+          description: 'Access denied'
+      security:
+        -
+          api_key: []
+  '/station/{station_id}/podcast/{id}':
+    get:
+      tags:
+        - 'Stations: Podcasts'
+      description: 'Retrieve details for a single podcast.'
+      parameters:
+        -
+          $ref: '#/components/parameters/station_id_required'
+        -
+          name: id
+          in: path
+          description: 'Podcast ID'
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Api_Podcast'
+        '403':
+          description: 'Access denied'
+      security:
+        -
+          api_key: []
+    put:
+      tags:
+        - 'Stations: Podcasts'
+      description: 'Update details of a single podcast.'
+      parameters:
+        -
+          $ref: '#/components/parameters/station_id_required'
+        -
+          name: id
+          in: path
+          description: 'Podcast ID'
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Api_Podcast'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Api_Status'
+        '403':
+          description: 'Access denied'
+      security:
+        -
+          api_key: []
+    delete:
+      tags:
+        - 'Stations: Podcasts'
+      description: 'Delete a single podcast.'
+      parameters:
+        -
+          $ref: '#/components/parameters/station_id_required'
+        -
+          name: id
+          in: path
+          description: 'Podcast ID'
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Api_Status'
+        '403':
+          description: 'Access denied'
+      security:
+        -
+          api_key: []
+  '/station/{station_id}/queue':
+    get:
+      tags:
+        - 'Stations: Queue'
+      description: 'Return information about the upcoming song playback queue.'
+      operationId: 9ddb577c2cf0cd64ece8c75d8f524ddd
+      parameters:
+        -
+          $ref: '#/components/parameters/station_id_required'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Api_StationQueueDetailed'
+        '404':
+          description: 'Station not found'
+        '403':
+          description: 'Access denied'
+      security:
+        -
+          api_key: []
+  '/station/{station_id}/queue/{id}':
+    get:
+      tags:
+        - 'Stations: Queue'
+      description: 'Retrieve details of a single queued item.'
+      parameters:
+        -
+          $ref: '#/components/parameters/station_id_required'
+        -
+          name: id
+          in: path
+          description: 'Queue Item ID'
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Api_StationQueueDetailed'
+        '404':
+          description: 'Station or Queue ID not found'
+        '403':
+          description: 'Access denied'
+      security:
+        -
+          api_key: []
+    delete:
+      tags:
+        - 'Stations: Queue'
+      description: 'Delete a single queued item.'
+      parameters:
+        -
+          $ref: '#/components/parameters/station_id_required'
+        -
+          name: id
+          in: path
+          description: 'Queue Item ID'
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Api_Status'
+        '404':
+          description: 'Station or Queue ID not found'
+        '403':
+          description: 'Access denied'
+      security:
+        -
+          api_key: []
+  '/station/{station_id}/remotes':
+    get:
+      tags:
+        - 'Stations: Remote Relays'
+      description: 'List all current remote relays.'
+      parameters:
+        -
+          $ref: '#/components/parameters/station_id_required'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/StationRemote'
+        '403':
+          description: 'Access denied'
+      security:
+        -
+          api_key: []
+    post:
+      tags:
+        - 'Stations: Remote Relays'
+      description: 'Create a new remote relay.'
+      parameters:
+        -
+          $ref: '#/components/parameters/station_id_required'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/StationRemote'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StationRemote'
+        '403':
+          description: 'Access denied'
+      security:
+        -
+          api_key: []
+  '/station/{station_id}/remote/{id}':
+    get:
+      tags:
+        - 'Stations: Remote Relays'
+      description: 'Retrieve details for a single remote relay.'
+      parameters:
+        -
+          $ref: '#/components/parameters/station_id_required'
+        -
+          name: id
+          in: path
+          description: 'Remote Relay ID'
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StationRemote'
+        '403':
+          description: 'Access denied'
+      security:
+        -
+          api_key: []
+    put:
+      tags:
+        - 'Stations: Remote Relays'
+      description: 'Update details of a single remote relay.'
+      parameters:
+        -
+          $ref: '#/components/parameters/station_id_required'
+        -
+          name: id
+          in: path
+          description: 'Remote Relay ID'
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/StationRemote'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Api_Status'
+        '403':
+          description: 'Access denied'
+      security:
+        -
+          api_key: []
+    delete:
+      tags:
+        - 'Stations: Remote Relays'
+      description: 'Delete a single remote relay.'
+      parameters:
+        -
+          $ref: '#/components/parameters/station_id_required'
+        -
+          name: id
+          in: path
+          description: 'Remote Relay ID'
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Api_Status'
+        '403':
+          description: 'Access denied'
+      security:
+        -
+          api_key: []
+  '/station/{station_id}/requests':
+    get:
+      tags:
+        - 'Stations: Song Requests'
+      description: 'Return a list of requestable songs.'
+      operationId: d97d958c5c0c3daec1415a0070be0f2e
+      parameters:
+        -
+          $ref: '#/components/parameters/station_id_required'
+      responses:
+        '200':
+          description: Success
+        '404':
+          description: 'Station not found'
+        '403':
+          description: 'Station does not support requests'
+  '/station/{station_id}/request/{request_id}':
+    post:
+      tags:
+        - 'Stations: Song Requests'
+      description: 'Submit a song request.'
+      operationId: 3242e46d9bc44e60804789a12ad7f895
+      parameters:
+        -
+          $ref: '#/components/parameters/station_id_required'
+        -
+          name: request_id
+          in: path
+          description: 'The requestable song ID'
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Success
+        '404':
+          description: 'Station not found'
+        '403':
+          description: 'Station does not support requests'
+  '/station/{station_id}/schedule':
+    get:
+      tags:
+        - 'Stations: Schedules'
+      description: 'Return upcoming and currently ongoing schedule entries.'
+      operationId: c4bd8a99f5774d5549127a5825745f05
+      parameters:
+        -
+          $ref: '#/components/parameters/station_id_required'
+        -
+          name: now
+          in: query
+          description: 'The date/time to compare schedule items to. Defaults to the current date and time.'
+          required: false
+          schema:
+            type: string
+        -
+          name: rows
+          in: query
+          description: 'The number of upcoming/ongoing schedule entries to return. Defaults to 5.'
+          required: false
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Api_StationSchedule'
+        '404':
+          description: 'Station not found'
+        '403':
+          description: 'Access denied'
+  '/station/{station_id}/status':
+    get:
+      tags:
+        - 'Stations: Service Control'
+      description: 'Retrieve the current status of all serivces associated with the radio broadcast.'
+      operationId: 745ceb49eea34152e8178ea44199654e
+      parameters:
+        -
+          $ref: '#/components/parameters/station_id_required'
+      responses:
+        '200':
+          description: Success
+        '403':
+          description: 'Access Forbidden'
+      security:
+        -
+          api_key: []
+  '/station/{station_id}/restart':
+    post:
+      tags:
+        - 'Stations: Service Control'
+      description: 'Restart all services associated with the radio broadcast.'
+      operationId: 718d2799a60687f9e1a38378aca6a87e
+      parameters:
+        -
+          $ref: '#/components/parameters/station_id_required'
+      responses:
+        '200':
+          description: Success
+        '403':
+          description: 'Access Forbidden'
+      security:
+        -
+          api_key: []
+  '/station/{station_id}/frontend/{action}':
+    post:
+      tags:
+        - 'Stations: Service Control'
+      description: 'Perform service control actions on the radio frontend (Icecast, SHOUTcast, etc.)'
+      operationId: 1ef21fbec5e30787b422fc110218d607
+      parameters:
+        -
+          $ref: '#/components/parameters/station_id_required'
+        -
+          name: action
+          in: path
+          description: 'The action to perform (start, stop, restart)'
+          required: false
+          schema:
+            type: string
+            default: restart
+      responses:
+        '200':
+          description: Success
+        '403':
+          description: 'Access Forbidden'
+      security:
+        -
+          api_key: []
+  '/station/{station_id}/backend/{action}':
+    post:
+      tags:
+        - 'Stations: Service Control'
+      description: 'Perform service control actions on the radio backend (Liquidsoap)'
+      operationId: 996770a2522ed05a9f1e6540fd239fcc
+      parameters:
+        -
+          $ref: '#/components/parameters/station_id_required'
+        -
+          name: action
+          in: path
+          description: 'The action to perform (for all: start, stop, restart; for Liquidsoap only: skip, disconnect)'
+          required: false
+          schema:
+            type: string
+            default: restart
+      responses:
+        '200':
+          description: Success
+        '403':
+          description: 'Access Forbidden'
+      security:
+        -
+          api_key: []
+  '/station/{station_id}/streamers':
+    get:
+      tags:
+        - 'Stations: Streamers/DJs'
+      description: 'List all current Streamer/DJ accounts for the specified station.'
+      parameters:
+        -
+          $ref: '#/components/parameters/station_id_required'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/StationStreamer'
+        '403':
+          description: 'Access denied'
+      security:
+        -
+          api_key: []
+    post:
+      tags:
+        - 'Stations: Streamers/DJs'
+      description: 'Create a new Streamer/DJ account.'
+      parameters:
+        -
+          $ref: '#/components/parameters/station_id_required'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/StationStreamer'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StationStreamer'
+        '403':
+          description: 'Access denied'
+      security:
+        -
+          api_key: []
+  '/station/{station_id}/streamer/{id}':
+    get:
+      tags:
+        - 'Stations: Streamers/DJs'
+      description: 'Retrieve details for a single Streamer/DJ account.'
+      parameters:
+        -
+          $ref: '#/components/parameters/station_id_required'
+        -
+          name: id
+          in: path
+          description: 'Streamer ID'
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StationStreamer'
+        '403':
+          description: 'Access denied'
+      security:
+        -
+          api_key: []
+    put:
+      tags:
+        - 'Stations: Streamers/DJs'
+      description: 'Update details of a single Streamer/DJ account.'
+      parameters:
+        -
+          $ref: '#/components/parameters/station_id_required'
+        -
+          name: id
+          in: path
+          description: 'Streamer ID'
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/StationStreamer'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Api_Status'
+        '403':
+          description: 'Access denied'
+      security:
+        -
+          api_key: []
+    delete:
+      tags:
+        - 'Stations: Streamers/DJs'
+      description: 'Delete a single Streamer/DJ account.'
+      parameters:
+        -
+          $ref: '#/components/parameters/station_id_required'
+        -
+          name: id
+          in: path
+          description: 'StationStreamer ID'
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Api_Status'
+        '403':
+          description: 'Access denied'
+      security:
+        -
+          api_key: []
+  '/station/{station_id}/webhooks':
+    get:
+      tags:
+        - 'Stations: Web Hooks'
+      description: 'List all current web hooks.'
+      parameters:
+        -
+          $ref: '#/components/parameters/station_id_required'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/StationWebhook'
+        '403':
+          description: 'Access denied'
+      security:
+        -
+          api_key: []
+    post:
+      tags:
+        - 'Stations: Web Hooks'
+      description: 'Create a new web hook.'
+      parameters:
+        -
+          $ref: '#/components/parameters/station_id_required'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/StationWebhook'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StationWebhook'
+        '403':
+          description: 'Access denied'
+      security:
+        -
+          api_key: []
+  '/station/{station_id}/webhook/{id}':
+    get:
+      tags:
+        - 'Stations: Web Hooks'
+      description: 'Retrieve details for a single web hook.'
+      parameters:
+        -
+          $ref: '#/components/parameters/station_id_required'
+        -
+          name: id
+          in: path
+          description: 'Web Hook ID'
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StationWebhook'
+        '403':
+          description: 'Access denied'
+      security:
+        -
+          api_key: []
+    put:
+      tags:
+        - 'Stations: Web Hooks'
+      description: 'Update details of a single web hook.'
+      parameters:
+        -
+          $ref: '#/components/parameters/station_id_required'
+        -
+          name: id
+          in: path
+          description: 'Web Hook ID'
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/StationWebhook'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Api_Status'
+        '403':
+          description: 'Access denied'
+      security:
+        -
+          api_key: []
+    delete:
+      tags:
+        - 'Stations: Web Hooks'
+      description: 'Delete a single web hook relay.'
+      parameters:
+        -
+          $ref: '#/components/parameters/station_id_required'
+        -
+          name: id
+          in: path
+          description: 'Web Hook ID'
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Api_Status'
+        '403':
+          description: 'Access denied'
+      security:
+        -
+          api_key: []
+components:
+  schemas:
+    Api_Admin_Relay:
+      properties:
+        id:
+          description: 'Station ID'
+          type: integer
+          example: 1
+        name:
+          description: 'Station name'
+          type: string
+          example: 'AzuraTest Radio'
+        shortcode:
+          description: 'Station "short code", used for URL and folder paths'
+          type: string
+          example: azuratest_radio
+        description:
+          nullable: true
+          description: 'Station description'
+          type: string
+          example: 'An AzuraCast station!'
+        url:
+          nullable: true
+          description: 'Station homepage URL'
+          type: string
+          example: 'https://www.azuracast.com/'
+        genre:
+          nullable: true
+          description: 'The genre of the station'
+          type: string
+          example: Variety
+        type:
+          description: 'Which broadcasting software (frontend) the station uses'
+          type: string
+          example: shoutcast2
+        port:
+          description: 'The port used by this station to serve its broadcasts.'
+          type: integer
+          example: 8000
+        relay_pw:
+          description: 'The relay password for the frontend (if applicable).'
+          type: string
+          example: p4ssw0rd
+        admin_pw:
+          description: 'The administrator password for the frontend (if applicable).'
+          type: string
+          example: p4ssw0rd
+        mounts:
+          type: array
+          items:
+            $ref: '#/components/schemas/Api_StationMount'
+      type: object
+    Api_Admin_StorageLocation:
+      type: object
+      allOf:
+        -
+          $ref: '#/components/schemas/HasLinks'
+        -
+          properties:
+            id:
+              type: integer
+              example: 1
+            type:
+              type: string
+              example: station_media
+            adapter:
+              type: string
+              example: local
+            path:
+              nullable: true
+              type: string
+              example: /var/azuracast/stations/azuratest_radio/media
+            s3CredentialKey:
+              nullable: true
+              type: string
+              example: your-key-here
+            s3CredentialSecret:
+              nullable: true
+              type: string
+              example: your-secret-here
+            s3Region:
+              nullable: true
+              type: string
+              example: your-region
+            s3Version:
+              nullable: true
+              type: string
+              example: latest
+            s3Bucket:
+              nullable: true
+              type: string
+              example: your-bucket-name
+            s3Endpoint:
+              nullable: true
+              type: string
+              example: 'https://your-region.digitaloceanspaces.com'
+            storageQuota:
+              nullable: true
+              type: string
+              example: '50 GB'
+            storageUsed:
+              nullable: true
+              type: string
+              example: '1 GB'
+            uri:
+              description: 'The URI associated with the storage location.'
+              type: string
+              example: /var/azuracast/www
+            stations:
+              nullable: true
+              description: 'The stations using this storage location, if any.'
+              type: array
+              items:
+                type: string
+                example: 'AzuraTest Radio'
+    Api_DetailedSongHistory:
+      allOf:
+        -
+          $ref: '#/components/schemas/Api_SongHistory'
+        -
+          properties:
+            listeners_start:
+              description: 'Number of listeners when the song playback started.'
+              type: integer
+              example: 94
+            listeners_end:
+              description: 'Number of listeners when song playback ended.'
+              type: integer
+              example: 105
+            delta_total:
+              description: 'The sum total change of listeners between the song''s start and ending.'
+              type: integer
+              example: 11
+          type: object
+    Api_Error:
+      properties:
+        code:
+          description: 'The numeric code of the error.'
+          type: integer
+          example: 500
+        message:
+          description: 'The text description of the error.'
+          type: string
+          example: 'Error description.'
+        formatted_message:
+          nullable: true
+          description: 'The HTML-formatted text description of the error.'
+          type: string
+          example: '<b>Error description.</b><br>Detailed error text.'
+        extra_data:
+          description: 'Stack traces and other supplemental data.'
+          type: array
+          items: {  }
+        success:
+          description: 'Used for API calls that expect an \Entity\Api\Status type response.'
+          type: boolean
+          example: false
+      type: object
+    Api_Listener:
+      properties:
+        ip:
+          description: 'The listener''s IP address'
+          type: string
+          example: 127.0.0.1
+        user_agent:
+          description: "The listener's HTTP User-Agent\n\nphpcs:disable Generic.Files.LineLength"
+          type: string
+          example: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/59.0.3071.86 Safari/537.36'
+        client:
+          description: 'The listener''s client details (extracted from user-agent)'
+          type: string
+          example: ''
+        is_mobile:
+          description: 'Whether the user-agent is likely a mobile browser.'
+          type: boolean
+          example: true
+        mount_is_local:
+          description: 'Whether the user is connected to a local mount point or a remote one.'
+          type: boolean
+          example: false
+        mount_name:
+          description: 'The display name of the mount point.'
+          type: string
+          example: /radio.mp3
+        connected_on:
+          description: 'UNIX timestamp that the user first connected.'
+          type: integer
+          example: 1624884448
+        connected_until:
+          description: 'UNIX timestamp that the user disconnected (or the latest timestamp if they are still connected).'
+          type: integer
+          example: 1624884448
+        connected_time:
+          description: 'Number of seconds that the user has been connected.'
+          type: integer
+          example: 30
+        location:
+          description: 'Location metadata, if available'
+          type: array
+          items: {  }
+      type: object
+    Api_NewRecord:
+      allOf:
+        -
+          $ref: '#/components/schemas/Api_Status'
+        -
+          properties:
+            links:
+              type: array
+              items:
+                type: string
+                example: 'http://localhost/api/record/1'
+          type: object
+    Api_NowPlaying:
+      properties:
+        station:
+          $ref: '#/components/schemas/Api_Station'
+        listeners:
+          $ref: '#/components/schemas/Api_NowPlayingListeners'
+        live:
+          $ref: '#/components/schemas/Api_NowPlayingLive'
+        now_playing:
+          nullable: true
+          description: 'Current Song'
+          oneOf:
+            -
+              $ref: '#/components/schemas/Api_NowPlayingCurrentSong'
+        playing_next:
+          nullable: true
+          description: 'Next Playing Song'
+          oneOf:
+            -
+              $ref: '#/components/schemas/Api_StationQueue'
+        song_history:
+          type: array
+          items:
+            $ref: '#/components/schemas/Api_SongHistory'
+        is_online:
+          description: 'Whether the stream is currently online.'
+          type: boolean
+          example: true
+        cache:
+          nullable: true
+          description: 'Debugging information about where the now playing data comes from.'
+          type: string
+          enum:
+            - hit
+            - database
+            - station
+      type: object
+    Api_NowPlayingCurrentSong:
+      allOf:
+        -
+          $ref: '#/components/schemas/Api_SongHistory'
+        -
+          properties:
+            elapsed:
+              description: 'Elapsed time of the song''s playback since it started.'
+              type: integer
+              example: 25
+            remaining:
+              description: 'Remaining time in the song, in seconds.'
+              type: integer
+              example: 155
+          type: object
+    Api_NowPlayingListeners:
+      properties:
+        total:
+          description: 'Total non-unique current listeners'
+          type: integer
+          example: 20
+        unique:
+          description: 'Total unique current listeners'
+          type: integer
+          example: 15
+        current:
+          description: 'Total non-unique current listeners (Legacy field, may be retired in the future.)'
+          type: integer
+          example: 20
+      type: object
+    Api_NowPlayingLive:
+      properties:
+        is_live:
+          description: 'Whether the stream is known to currently have a live DJ.'
+          type: boolean
+          example: false
+        streamer_name:
+          description: 'The current active streamer/DJ, if one is available.'
+          type: string
+          example: 'DJ Jazzy Jeff'
+        broadcast_start:
+          nullable: true
+          description: 'The start timestamp of the current broadcast, if one is available.'
+          type: integer
+          example: '1591548318'
+      type: object
+    Api_Podcast:
+      type: object
+      allOf:
+        -
+          $ref: '#/components/schemas/HasLinks'
+        -
+          properties:
+            id:
+              nullable: true
+              type: string
+            storage_location_id:
+              nullable: true
+              type: integer
+            title:
+              nullable: true
+              type: string
+            link:
+              nullable: true
+              type: string
+            description:
+              nullable: true
+              type: string
+            language:
+              nullable: true
+              type: string
+            has_custom_art:
+              type: boolean
+            art:
+              nullable: true
+              type: string
+            art_updated_at:
+              type: integer
+            categories:
+              type: array
+              items:
+                type: string
+            episodes:
+              type: array
+              items:
+                type: string
+    Api_PodcastEpisode:
+      type: object
+      allOf:
+        -
+          $ref: '#/components/schemas/HasLinks'
+        -
+          properties:
+            id:
+              nullable: true
+              type: string
+            title:
+              nullable: true
+              type: string
+            description:
+              nullable: true
+              type: string
+            explicit:
+              type: boolean
+            publish_at:
+              nullable: true
+              type: integer
+            has_media:
+              type: boolean
+            media:
+              $ref: '#/components/schemas/Api_PodcastMedia'
+            has_custom_art:
+              type: boolean
+            art:
+              nullable: true
+              type: string
+            art_updated_at:
+              type: integer
+    Api_PodcastMedia:
+      properties:
+        id:
+          nullable: true
+          type: string
+        original_name:
+          nullable: true
+          type: string
+        length:
+          type: number
+          format: float
+        length_text:
+          nullable: true
+          type: string
+        path:
+          nullable: true
+          type: string
+      type: object
+    Api_Song:
+      properties:
+        id:
+          description: 'The song''s 32-character unique identifier hash'
+          type: string
+          example: 9f33bbc912c19603e51be8e0987d076b
+        text:
+          description: 'The song title, usually "Artist - Title"'
+          type: string
+          example: 'Chet Porter - Aluko River'
+        artist:
+          description: 'The song artist.'
+          type: string
+          example: 'Chet Porter'
+        title:
+          description: 'The song title.'
+          type: string
+          example: 'Aluko River'
+        album:
+          description: 'The song album.'
+          type: string
+          example: 'Moving Castle'
+        genre:
+          description: 'The song genre.'
+          type: string
+          example: Rock
+        lyrics:
+          description: 'Lyrics to the song.'
+          type: string
+          example: ''
+        art:
+          description: 'URL to the album artwork (if available).'
+          example: 'https://picsum.photos/1200/1200'
+        custom_fields:
+          type: array
+          items:
+            type: string
+            example: custom_field_value
+      type: object
+    Api_SongHistory:
+      properties:
+        sh_id:
+          description: 'Song history unique identifier'
+          type: integer
+        played_at:
+          description: 'UNIX timestamp when playback started.'
+          type: integer
+          example: 1624884448
+        duration:
+          description: 'Duration of the song in seconds'
+          type: integer
+          example: 180
+        playlist:
+          nullable: true
+          description: 'Indicates the playlist that the song was played from, if available, or empty string if not.'
+          type: string
+          example: 'Top 100'
+        streamer:
+          nullable: true
+          description: 'Indicates the current streamer that was connected, if available, or empty string if not.'
+          type: string
+          example: 'Test DJ'
+        is_request:
+          description: 'Indicates whether the song is a listener request.'
+          type: boolean
+        song:
+          $ref: '#/components/schemas/Api_Song'
+      type: object
+    Api_Station:
+      properties:
+        id:
+          description: 'Station ID'
+          type: integer
+          example: 1
+        name:
+          description: 'Station name'
+          type: string
+          example: 'AzuraTest Radio'
+        shortcode:
+          description: 'Station "short code", used for URL and folder paths'
+          type: string
+          example: azuratest_radio
+        description:
+          description: 'Station description'
+          type: string
+          example: 'An AzuraCast station!'
+        frontend:
+          description: 'Which broadcasting software (frontend) the station uses'
+          type: string
+          example: shoutcast2
+        backend:
+          description: 'Which AutoDJ software (backend) the station uses'
+          type: string
+          example: liquidsoap
+        listen_url:
+          description: 'The full URL to listen to the default mount of the station'
+          example: 'http://localhost:8000/radio.mp3'
+        url:
+          nullable: true
+          description: 'The public URL of the station.'
+          type: string
+          example: 'https://example.com/'
+        public_player_url:
+          description: 'The public player URL for the station.'
+          example: 'https://example.com/public/example_station'
+        playlist_pls_url:
+          description: 'The playlist download URL in PLS format.'
+          example: 'https://example.com/public/example_station/playlist.pls'
+        playlist_m3u_url:
+          description: 'The playlist download URL in M3U format.'
+          example: 'https://example.com/public/example_station/playlist.m3u'
+        is_public:
+          description: 'If the station is public (i.e. should be shown in listings of all stations)'
+          type: boolean
+          example: true
+        mounts:
+          type: array
+          items:
+            $ref: '#/components/schemas/Api_StationMount'
+        remotes:
+          type: array
+          items:
+            $ref: '#/components/schemas/Api_StationRemote'
+      type: object
+    Api_StationMount:
+      allOf:
+        -
+          $ref: '#/components/schemas/Api_StationRemote'
+        -
+          properties:
+            path:
+              description: 'The relative path that corresponds to this mount point'
+              type: string
+              example: /radio.mp3
+            is_default:
+              description: 'If the mount is the default mount for the parent station'
+              type: boolean
+              example: true
+          type: object
+    Api_StationOnDemand:
+      properties:
+        track_id:
+          description: 'Track ID unique identifier'
+          type: string
+          example: 1
+        download_url:
+          description: 'URL to download/play track.'
+          type: string
+          example: /api/station/1/ondemand/download/1
+        media:
+          $ref: '#/components/schemas/Api_Song'
+        playlist:
+          type: string
+      type: object
+    Api_StationPlaylistQueue:
+      properties:
+        spm_id:
+          nullable: true
+          description: 'ID of the StationPlaylistMedia record associating this track with the playlist'
+          type: integer
+          example: 1
+        media_id:
+          description: 'ID of the StationPlaylistMedia record associating this track with the playlist'
+          type: integer
+          example: 1
+        song_id:
+          description: 'The song''s 32-character unique identifier hash'
+          type: string
+          example: 9f33bbc912c19603e51be8e0987d076b
+        artist:
+          description: 'The song artist.'
+          type: string
+          example: 'Chet Porter'
+        title:
+          description: 'The song title.'
+          type: string
+          example: 'Aluko River'
+      type: object
+    Api_StationQueue:
+      properties:
+        cued_at:
+          description: 'UNIX timestamp when playback is expected to start.'
+          type: integer
+          example: 1624884448
+        duration:
+          description: 'Duration of the song in seconds'
+          type: integer
+          example: 180
+        playlist:
+          nullable: true
+          description: 'Indicates the playlist that the song was played from, if available, or empty string if not.'
+          type: string
+          example: 'Top 100'
+        is_request:
+          description: 'Indicates whether the song is a listener request.'
+          type: boolean
+        song:
+          $ref: '#/components/schemas/Api_Song'
+      type: object
+    Api_StationQueueDetailed:
+      type: object
+      allOf:
+        -
+          $ref: '#/components/schemas/Api_StationQueue'
+        -
+          $ref: '#/components/schemas/HasLinks'
+        -
+          properties:
+            autodj_custom_uri:
+              nullable: true
+              description: 'Custom AutoDJ playback URI, if it exists.'
+              type: string
+              example: ''
+    Api_StationRemote:
+      properties:
+        id:
+          description: 'Mount/Remote ID number.'
+          type: integer
+          example: 1
+        name:
+          description: 'Mount point name/URL'
+          type: string
+          example: /radio.mp3
+        url:
+          description: 'Full listening URL specific to this mount'
+          example: 'http://localhost:8000/radio.mp3'
+        bitrate:
+          nullable: true
+          description: 'Bitrate (kbps) of the broadcasted audio (if known)'
+          type: integer
+          example: 128
+        format:
+          nullable: true
+          description: 'Audio encoding format of broadcasted audio (if known)'
+          type: string
+          example: mp3
+        listeners:
+          $ref: '#/components/schemas/Api_NowPlayingListeners'
+      type: object
+    Api_StationRequest:
+      properties:
+        request_id:
+          description: 'Requestable ID unique identifier'
+          type: string
+          example: 1
+        request_url:
+          description: 'URL to directly submit request'
+          type: string
+          example: /api/station/1/request/1
+        song:
+          $ref: '#/components/schemas/Api_Song'
+      type: object
+    Api_StationSchedule:
+      properties:
+        id:
+          description: 'Unique identifier for this schedule entry.'
+          type: integer
+          example: 1
+        type:
+          description: 'The type of this schedule entry.'
+          type: string
+          enum:
+            - playlist
+            - streamer
+          example: playlist
+        name:
+          description: 'Either the playlist or streamer''s display name.'
+          type: string
+          example: 'Example Schedule Entry'
+        start_timestamp:
+          description: 'The start time of the schedule entry, in UNIX format.'
+          type: integer
+          example: 1624884448
+        start:
+          description: 'The start time of the schedule entry, in ISO 8601 format.'
+          type: string
+          example: '020-02-19T03:00:00-06:00'
+        end_timestamp:
+          description: 'The end time of the schedule entry, in UNIX format.'
+          type: integer
+          example: 1624884448
+        end:
+          description: 'The start time of the schedule entry, in ISO 8601 format.'
+          type: string
+          example: '020-02-19T05:00:00-06:00'
+        is_now:
+          description: 'Whether the event is currently ongoing.'
+          type: boolean
+          example: true
+      type: object
+    Api_StationServiceStatus:
+      properties:
+        backend_running:
+          type: boolean
+          example: true
+        frontend_running:
+          type: boolean
+          example: true
+      type: object
+    Api_Status:
+      properties:
+        success:
+          type: boolean
+          example: true
+        message:
+          type: string
+          example: 'Changes saved successfully.'
+        formatted_message:
+          type: string
+          example: '<b>Changes saved successfully.</b>'
+      type: object
+    Api_SystemStatus:
+      properties:
+        online:
+          description: 'Whether the service is online or not (should always be true)'
+          type: boolean
+          example: true
+        timestamp:
+          description: 'The current UNIX timestamp'
+          type: integer
+          example: 1624884448
+      type: object
+    Api_Time:
+      properties:
+        timestamp:
+          description: 'The current UNIX timestamp'
+          type: integer
+          example: 1497652397
+        utc_datetime:
+          type: string
+          example: '2017-06-16 10:33:17'
+        utc_date:
+          type: string
+          example: 'June 16, 2017'
+        utc_time:
+          type: string
+          example: '10:33pm'
+        utc_json:
+          type: string
+          example: '2012-12-25T16:30:00.000000Z'
+      type: object
+    HasLinks:
+      properties:
+        links:
+          type: array
+          items:
+            type: string
+            example: 'http://localhost/api/stations/1/queue/1'
+      type: object
+    Api_UploadFile:
+      properties:
+        path:
+          type: string
+          example: relative/path/to/file.mp3
+        file:
+          type: string
+          example: ''
+      type: object
+    CustomField:
+      type: object
+      allOf:
+        -
+          $ref: '#/components/schemas/HasAutoIncrementId'
+        -
+          properties:
+            name:
+              type: string
+            short_name:
+              nullable: true
+              description: 'The programmatic name for the field. Can be auto-generated from the full name.'
+              type: string
+            auto_assign:
+              nullable: true
+              description: 'An ID3v2 field to automatically assign to this value, if it exists in the media file.'
+              type: string
+    Relay:
+      type: object
+      allOf:
+        -
+          $ref: '#/components/schemas/HasAutoIncrementId'
+        -
+          properties:
+            base_url:
+              type: string
+              example: 'https://custom-url.example.com'
+            name:
+              nullable: true
+              type: string
+              example: Relay
+            is_visible_on_public_pages:
+              type: boolean
+              example: true
+            created_at:
+              type: integer
+              example: 1624884448
+            updated_at:
+              type: integer
+              example: 1624884448
+    Role:
+      type: object
+      allOf:
+        -
+          $ref: '#/components/schemas/HasAutoIncrementId'
+        -
+          properties:
+            name:
+              type: string
+              example: 'Super Administrator'
+            permissions:
+              type: array
+              items: {  }
+    Settings:
+      properties:
+        app_unique_identifier:
+          type: string
+        base_url:
+          nullable: true
+          description: 'Site Base URL'
+          type: string
+          example: 'https://your.azuracast.site'
+        instance_name:
+          nullable: true
+          description: 'AzuraCast Instance Name'
+          type: string
+          example: 'My AzuraCast Instance'
+        prefer_browser_url:
+          description: 'Prefer Browser URL (If Available)'
+          type: boolean
+          example: 'false'
+        use_radio_proxy:
+          description: 'Use Web Proxy for Radio'
+          type: boolean
+          example: 'false'
+        history_keep_days:
+          description: 'Days of Playback History to Keep'
+          type: integer
+        always_use_ssl:
+          description: 'Always Use HTTPS'
+          type: boolean
+          example: 'false'
+        api_access_control:
+          nullable: true
+          description: 'API ''Access-Control-Allow-Origin'' header'
+          type: string
+          example: '*'
+        enable_websockets:
+          description: 'Whether to use Websockets for Now Playing data updates.'
+          type: boolean
+          example: 'false'
+        analytics:
+          nullable: true
+          description: 'Listener Analytics Collection'
+          type: string
+        check_for_updates:
+          description: 'Check for Updates and Announcements'
+          type: boolean
+          example: 'true'
+        update_results:
+          description: 'Results of the latest update check.'
+          example: ''
+        update_last_run:
+          description: 'The UNIX timestamp when updates were last checked.'
+          type: integer
+          example: 1624884448
+        public_theme:
+          nullable: true
+          description: 'Base Theme for Public Pages'
+          type: string
+          example: light
+        hide_album_art:
+          description: 'Hide Album Art on Public Pages'
+          type: boolean
+          example: 'false'
+        homepage_redirect_url:
+          nullable: true
+          description: 'Homepage Redirect URL'
+          type: string
+          example: 'https://example.com/'
+        default_album_art_url:
+          nullable: true
+          description: 'Default Album Art URL'
+          type: string
+          example: 'https://example.com/image.jpg'
+        use_external_album_art_when_processing_media:
+          description: 'Attempt to fetch album art from external sources when processing media.'
+          type: boolean
+          example: 'false'
+        use_external_album_art_in_apis:
+          description: 'Attempt to fetch album art from external sources in API requests.'
+          type: boolean
+          example: 'false'
+        last_fm_api_key:
+          nullable: true
+          description: 'An API key to connect to Last.fm services, if provided.'
+          type: string
+          example: SAMPLE-API-KEY
+        hide_product_name:
+          description: 'Hide AzuraCast Branding on Public Pages'
+          type: boolean
+          example: 'false'
+        public_custom_css:
+          nullable: true
+          description: 'Custom CSS for Public Pages'
+          type: string
+          example: ''
+        public_custom_js:
+          nullable: true
+          description: 'Custom JS for Public Pages'
+          type: string
+          example: ''
+        internal_custom_css:
+          nullable: true
+          description: 'Custom CSS for Internal Pages'
+          type: string
+          example: ''
+        backup_enabled:
+          description: 'Whether backup is enabled.'
+          type: boolean
+          example: 'false'
+        backup_time_code:
+          nullable: true
+          description: 'The timecode (i.e. 400 for 4:00AM) when automated backups should run.'
+          type: string
+          example: 400
+        backup_exclude_media:
+          description: 'Whether to exclude media in automated backups.'
+          type: boolean
+          example: 'false'
+        backup_keep_copies:
+          description: 'Number of backups to keep, or infinite if zero/null.'
+          type: integer
+          example: 2
+        backup_storage_location:
+          nullable: true
+          description: 'The storage location ID for automated backups.'
+          type: integer
+          example: 1
+        backup_last_run:
+          description: 'The UNIX timestamp when automated backup was last run.'
+          type: integer
+          example: 1624884448
+        backup_last_result:
+          nullable: true
+          description: 'The result of the latest automated backup task.'
+          type: string
+          example: ''
+        backup_last_output:
+          nullable: true
+          description: 'The output of the latest automated backup task.'
+          type: string
+          example: ''
+        setup_complete_time:
+          description: 'The UNIX timestamp when setup was last completed.'
+          type: integer
+          example: 1624884448
+        nowplaying:
+          description: 'The current cached now playing data.'
+          example: ''
+        sync_nowplaying_last_run:
+          description: 'The UNIX timestamp when the now playing sync task was last run.'
+          type: integer
+          example: 1624884448
+        sync_short_last_run:
+          description: 'The UNIX timestamp when the 60-second ''short'' sync task was last run.'
+          type: integer
+          example: 1624884448
+        sync_medium_last_run:
+          description: 'The UNIX timestamp when the 5-minute ''medium'' sync task was last run.'
+          type: integer
+          example: 1624884448
+        sync_long_last_run:
+          description: 'The UNIX timestamp when the 1-hour ''long'' sync task was last run.'
+          type: integer
+          example: 1624884448
+        external_ip:
+          nullable: true
+          description: 'This installation''s external IP.'
+          type: string
+          example: 192.168.1.1
+        geolite_license_key:
+          nullable: true
+          description: 'The license key for the Maxmind Geolite download.'
+          type: string
+          example: ''
+        geolite_last_run:
+          description: 'The UNIX timestamp when the Maxmind Geolite was last downloaded.'
+          type: integer
+          example: 1624884448
+        enable_advanced_features:
+          description: 'Whether to enable ''advanced'' functionality in the system that is intended for power users.'
+          type: boolean
+          example: false
+        mail_enabled:
+          description: 'Enable e-mail delivery across the application.'
+          type: boolean
+          example: 'true'
+        mail_sender_name:
+          nullable: true
+          description: 'The name of the sender of system e-mails.'
+          type: string
+          example: AzuraCast
+        mail_sender_email:
+          nullable: true
+          description: 'The e-mail address of the sender of system e-mails.'
+          type: string
+          example: example@example.com
+        mail_smtp_host:
+          nullable: true
+          description: 'The host to send outbound SMTP mail.'
+          type: string
+          example: smtp.example.com
+        mail_smtp_port:
+          description: 'The port for sending outbound SMTP mail.'
+          type: integer
+          example: 465
+        mail_smtp_username:
+          nullable: true
+          description: 'The username when connecting to SMTP mail.'
+          type: string
+          example: username
+        mail_smtp_password:
+          nullable: true
+          description: 'The password when connecting to SMTP mail.'
+          type: string
+          example: password
+        mail_smtp_secure:
+          description: 'Whether to use a secure (TLS) connection when sending SMTP mail.'
+          type: boolean
+          example: 'true'
+        avatar_service:
+          nullable: true
+          description: 'The external avatar service to use when fetching avatars.'
+          type: string
+          example: libravatar
+        avatar_default_url:
+          nullable: true
+          description: 'The default avatar URL.'
+          type: string
+          example: ''
+      type: object
+    Station:
+      type: object
+      allOf:
+        -
+          $ref: '#/components/schemas/HasAutoIncrementId'
+        -
+          properties:
+            name:
+              nullable: true
+              description: 'The full display name of the station.'
+              type: string
+              example: 'AzuraTest Radio'
+            short_name:
+              nullable: true
+              description: 'The URL-friendly name for the station, typically auto-generated from the full station name.'
+              type: string
+              example: azuratest_radio
+            is_enabled:
+              description: 'If set to ''false'', prevents the station from broadcasting but leaves it in the database.'
+              type: boolean
+              example: true
+            frontend_type:
+              nullable: true
+              description: 'The frontend adapter (icecast,shoutcast,remote,etc)'
+              type: string
+              example: icecast
+            frontend_config:
+              description: 'An array containing station-specific frontend configuration'
+              type: array
+              items: {  }
+            backend_type:
+              nullable: true
+              description: 'The backend adapter (liquidsoap,etc)'
+              type: string
+              example: liquidsoap
+            backend_config:
+              description: 'An array containing station-specific backend configuration'
+              type: array
+              items: {  }
+            description:
+              nullable: true
+              type: string
+              example: 'A sample radio station.'
+            url:
+              nullable: true
+              type: string
+              example: 'https://demo.azuracast.com/'
+            genre:
+              nullable: true
+              type: string
+              example: Various
+            radio_base_dir:
+              nullable: true
+              type: string
+              example: /var/azuracast/stations/azuratest_radio
+            automation_settings:
+              type: array
+              items: {  }
+            enable_requests:
+              description: 'Whether listeners can request songs to play on this station.'
+              type: boolean
+              example: true
+            request_delay:
+              nullable: true
+              type: integer
+              example: 5
+            request_threshold:
+              nullable: true
+              type: integer
+              example: 15
+            disconnect_deactivate_streamer:
+              nullable: true
+              type: integer
+              example: 0
+            enable_streamers:
+              description: 'Whether streamers are allowed to broadcast to this station at all.'
+              type: boolean
+              example: false
+            is_streamer_live:
+              description: 'Whether a streamer is currently active on the station.'
+              type: boolean
+              example: false
+            enable_public_page:
+              description: 'Whether this station is visible as a public page and in a now-playing API response.'
+              type: boolean
+              example: true
+            enable_on_demand:
+              description: 'Whether this station has a public ''on-demand'' streaming and download page.'
+              type: boolean
+              example: true
+            enable_on_demand_download:
+              description: 'Whether the ''on-demand'' page offers download capability.'
+              type: boolean
+              example: true
+            api_history_items:
+              description: 'The number of ''last played'' history items to show for a station in API responses.'
+              type: integer
+              example: 5
+            timezone:
+              nullable: true
+              description: 'The time zone that station operations should take place in.'
+              type: string
+              example: UTC
+            default_album_art_url:
+              nullable: true
+              description: 'The station-specific default album artwork URL.'
+              type: string
+              example: 'https://example.com/image.jpg'
+    StationMedia:
+      type: object
+      allOf:
+        -
+          $ref: '#/components/schemas/HasAutoIncrementId'
+        -
+          $ref: '#/components/schemas/HasSongFields'
+        -
+          properties:
+            unique_id:
+              nullable: true
+              description: 'A unique identifier associated with this record.'
+              type: string
+              example: 69b536afc7ebbf16457b8645
+            album:
+              nullable: true
+              description: 'The name of the media file''s album.'
+              type: string
+              example: 'Test Album'
+            genre:
+              nullable: true
+              description: 'The genre of the media file.'
+              type: string
+              example: Rock
+            lyrics:
+              nullable: true
+              description: 'Full lyrics of the track, if available.'
+              type: string
+              example: '...Never gonna give you up...'
+            isrc:
+              nullable: true
+              description: 'The track ISRC (International Standard Recording Code), used for licensing purposes.'
+              type: string
+              example: GBARL0600786
+            length:
+              nullable: true
+              description: 'The song duration in seconds.'
+              type: number
+              format: float
+              example: 240
+            length_text:
+              nullable: true
+              description: 'The formatted song duration (in mm:ss format)'
+              type: string
+              example: '4:00'
+            path:
+              description: 'The relative path of the media file.'
+              type: string
+              example: test.mp3
+            mtime:
+              nullable: true
+              description: 'The UNIX timestamp when the database was last modified.'
+              type: integer
+              example: 1624884448
+            amplify:
+              nullable: true
+              description: 'The amount of amplification (in dB) to be applied to the radio source (liq_amplify)'
+              type: number
+              format: float
+              example: -14
+            fade_overlap:
+              nullable: true
+              description: 'The length of time (in seconds) before the next song starts in the fade (liq_start_next)'
+              type: number
+              format: float
+              example: 2
+            fade_in:
+              nullable: true
+              description: 'The length of time (in seconds) to fade in the next track (liq_fade_in)'
+              type: number
+              format: float
+              example: 3
+            fade_out:
+              nullable: true
+              description: 'The length of time (in seconds) to fade out the previous track (liq_fade_out)'
+              type: number
+              format: float
+              example: 3
+            cue_in:
+              nullable: true
+              description: 'The length of time (in seconds) from the start of the track to start playing (liq_cue_in)'
+              type: number
+              format: float
+              example: 30
+            cue_out:
+              nullable: true
+              description: 'The length of time (in seconds) from the CUE-IN of the track to stop playing (liq_cue_out)'
+              type: number
+              format: float
+              example: 30
+            art_updated_at:
+              description: 'The latest time (UNIX timestamp) when album art was updated.'
+              type: integer
+              example: 1624884448
+            playlists:
+              type: array
+              items: {  }
+    StationMount:
+      type: object
+      allOf:
+        -
+          $ref: '#/components/schemas/HasAutoIncrementId'
+        -
+          properties:
+            name:
+              type: string
+              example: /radio.mp3
+            display_name:
+              nullable: true
+              type: string
+              example: '128kbps MP3'
+            is_visible_on_public_pages:
+              type: boolean
+              example: true
+            is_default:
+              type: boolean
+              example: false
+            is_public:
+              type: boolean
+              example: false
+            fallback_mount:
+              nullable: true
+              type: string
+              example: /error.mp3
+            relay_url:
+              nullable: true
+              type: string
+              example: 'https://radio.example.com:8000/radio.mp3'
+            authhash:
+              nullable: true
+              type: string
+              example: ''
+            max_listener_duration:
+              type: integer
+              example: 43200
+            enable_autodj:
+              type: boolean
+              example: true
+            autodj_format:
+              nullable: true
+              type: string
+              example: mp3
+            autodj_bitrate:
+              nullable: true
+              type: integer
+              example: 128
+            custom_listen_url:
+              nullable: true
+              type: string
+              example: 'https://custom-listen-url.example.com/stream.mp3'
+            frontend_config:
+              type: array
+              items: {  }
+            listeners_unique:
+              description: 'The most recent number of unique listeners.'
+              type: integer
+              example: 10
+            listeners_total:
+              description: 'The most recent number of total (non-unique) listeners.'
+              type: integer
+              example: 12
+    StationPlaylist:
+      type: object
+      allOf:
+        -
+          $ref: '#/components/schemas/HasAutoIncrementId'
+        -
+          properties:
+            name:
+              type: string
+              example: 'Test Playlist'
+            type:
+              type: string
+              example: default
+            source:
+              type: string
+              example: songs
+            order:
+              type: string
+              example: shuffle
+            remote_url:
+              nullable: true
+              type: string
+              example: 'https://remote-url.example.com/stream.mp3'
+            remote_type:
+              nullable: true
+              type: string
+              example: stream
+            remote_buffer:
+              description: 'The total time (in seconds) that Liquidsoap should buffer remote URL streams.'
+              type: integer
+              example: 0
+            is_enabled:
+              type: boolean
+              example: true
+            is_jingle:
+              description: 'If yes, do not send jingle metadata to AutoDJ or trigger web hooks.'
+              type: boolean
+              example: false
+            play_per_songs:
+              type: integer
+              example: 5
+            play_per_minutes:
+              type: integer
+              example: 120
+            play_per_hour_minute:
+              type: integer
+              example: 15
+            weight:
+              type: integer
+              example: 3
+            include_in_requests:
+              type: boolean
+              example: true
+            include_in_on_demand:
+              description: 'Whether this playlist''s media is included in ''on demand'' download/streaming if enabled.'
+              type: boolean
+              example: true
+            include_in_automation:
+              type: boolean
+              example: false
+            backend_options:
+              nullable: true
+              type: string
+              example: 'interrupt,loop_once,single_track,merge'
+            avoid_duplicates:
+              type: boolean
+              example: true
+            schedule_items:
+              type: array
+              items: {  }
+    StationRemote:
+      type: object
+      allOf:
+        -
+          $ref: '#/components/schemas/HasAutoIncrementId'
+        -
+          properties:
+            display_name:
+              nullable: true
+              type: string
+              example: '128kbps MP3'
+            is_visible_on_public_pages:
+              type: boolean
+              example: true
+            type:
+              type: string
+              example: icecast
+            enable_autodj:
+              type: boolean
+              example: false
+            autodj_format:
+              nullable: true
+              type: string
+              example: mp3
+            autodj_bitrate:
+              nullable: true
+              type: integer
+              example: 128
+            custom_listen_url:
+              nullable: true
+              type: string
+              example: 'https://custom-listen-url.example.com/stream.mp3'
+            url:
+              nullable: true
+              type: string
+              example: 'https://custom-url.example.com'
+            mount:
+              nullable: true
+              type: string
+              example: /stream.mp3
+            admin_password:
+              nullable: true
+              type: string
+              example: password
+            source_port:
+              nullable: true
+              type: integer
+              example: 8000
+            source_mount:
+              nullable: true
+              type: string
+              example: /
+            source_username:
+              nullable: true
+              type: string
+              example: source
+            source_password:
+              nullable: true
+              type: string
+              example: password
+            is_public:
+              type: boolean
+              example: false
+            listeners_unique:
+              description: 'The most recent number of unique listeners.'
+              type: integer
+              example: 10
+            listeners_total:
+              description: 'The most recent number of total (non-unique) listeners.'
+              type: integer
+              example: 12
+    StationSchedule:
+      type: object
+      allOf:
+        -
+          $ref: '#/components/schemas/HasAutoIncrementId'
+        -
+          properties:
+            start_time:
+              type: integer
+              example: 900
+            end_time:
+              type: integer
+              example: 2200
+            days:
+              nullable: true
+              description: 'Array of ISO-8601 days (1 for Monday, 7 for Sunday)'
+              type: string
+              example: '0,1,2,3'
+    StationStreamer:
+      description: 'Station streamers (DJ accounts) allowed to broadcast to a station.'
+      type: object
+      allOf:
+        -
+          $ref: '#/components/schemas/HasAutoIncrementId'
+        -
+          properties:
+            streamer_username:
+              type: string
+              example: dj_test
+            streamer_password:
+              type: string
+              example: ''
+            display_name:
+              nullable: true
+              type: string
+              example: 'Test DJ'
+            comments:
+              nullable: true
+              type: string
+              example: 'This is a test DJ account.'
+            is_active:
+              type: boolean
+              example: true
+            enforce_schedule:
+              type: boolean
+              example: false
+            reactivate_at:
+              nullable: true
+              type: integer
+              example: 1624884448
+            schedule_items:
+              type: array
+              items: {  }
+    StationStreamerBroadcast:
+      description: 'Each individual broadcast associated with a streamer.'
+      type: object
+      allOf:
+        -
+          $ref: '#/components/schemas/HasAutoIncrementId'
+    StationWebhook:
+      type: object
+      allOf:
+        -
+          $ref: '#/components/schemas/HasAutoIncrementId'
+        -
+          properties:
+            name:
+              nullable: true
+              description: 'The nickname of the webhook connector.'
+              type: string
+              example: 'Twitter Post'
+            type:
+              description: 'The type of webhook connector to use.'
+              type: string
+              example: twitter
+            is_enabled:
+              type: boolean
+              example: true
+            triggers:
+              description: 'List of events that should trigger the webhook notification.'
+              type: array
+              items: {  }
+            config:
+              description: 'Detailed webhook configuration (if applicable)'
+              type: array
+              items: {  }
+            metadata:
+              description: 'Internal details used by the webhook to preserve state.'
+              type: array
+              items: {  }
+    HasAutoIncrementId:
+      properties:
+        id:
+          nullable: true
+          type: integer
+      type: object
+    HasSongFields:
+      properties:
+        song_id:
+          type: string
+        text:
+          nullable: true
+          type: string
+        artist:
+          nullable: true
+          type: string
+        title:
+          nullable: true
+          type: string
+      type: object
+    HasUniqueId:
+      properties:
+        id:
+          nullable: true
+          type: string
+      type: object
+    User:
+      type: object
+      allOf:
+        -
+          $ref: '#/components/schemas/HasAutoIncrementId'
+        -
+          properties:
+            email:
+              nullable: true
+              type: string
+              example: demo@azuracast.com
+            new_password:
+              nullable: true
+              type: string
+              example: ''
+            name:
+              nullable: true
+              type: string
+              example: 'Demo Account'
+            locale:
+              nullable: true
+              type: string
+              example: en_US
+            theme:
+              nullable: true
+              type: string
+              example: dark
+            two_factor_secret:
+              nullable: true
+              type: string
+              example: A1B2C3D4
+            created_at:
+              type: integer
+              example: 1624884448
+            updated_at:
+              type: integer
+              example: 1624884448
+            roles:
+              type: array
+              items: {  }
+  responses:
+    todo:
+      description: 'This API call has no documented response (yet)'
+  parameters:
+    station_id_required:
+      name: station_id
+      in: path
+      description: 'The station ID'
+      required: true
+      schema:
+        type: integer
+        format: int64
+      example: 1
+  securitySchemes:
+    api_key:
+      type: apiKey
+      name: X-API-Key
+      in: header
+tags:
+  -
+    name: 'Now Playing'
+    description: 'Endpoints that provide full summaries of the current state of stations.'
+  -
+    name: 'Stations: General'
+  -
+    name: 'Stations: Song Requests'
+  -
+    name: 'Stations: Service Control'
+  -
+    name: 'Stations: History'
+  -
+    name: 'Stations: Listeners'
+  -
+    name: 'Stations: Schedules'
+  -
+    name: 'Stations: Media'
+  -
+    name: 'Stations: Mount Points'
+  -
+    name: 'Stations: Playlists'
+  -
+    name: 'Stations: Podcasts'
+  -
+    name: 'Stations: Queue'
+  -
+    name: 'Stations: Remote Relays'
+  -
+    name: 'Stations: Streamers/DJs'
+  -
+    name: 'Stations: Web Hooks'
+  -
+    name: 'Administration: Custom Fields'
+  -
+    name: 'Administration: Users'
+  -
+    name: 'Administration: Relays'
+  -
+    name: 'Administration: Roles'
+  -
+    name: 'Administration: Settings'
+  -
+    name: 'Administration: Stations'
+  -
+    name: 'Administration: Storage Locations'
+  -
+    name: Miscellaneous
+externalDocs:
+  description: 'AzuraCast on GitHub'
+  url: 'https://github.com/AzuraCast/AzuraCast'

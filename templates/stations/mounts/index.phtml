@@ -1,0 +1,21 @@
+<?php
+
+$this->layout(
+    'main',
+    [
+        'title' => __('Mount Points'),
+        'manual' => true,
+    ]
+);
+
+$props = [
+    'listUrl' => $router->fromHere('api:stations:mounts'),
+    'stationFrontendType' => $station->getFrontendType(),
+    'enableAdvancedFeatures' => $enableAdvancedFeatures,
+];
+
+/** @var \App\Assets $assets */
+$assets->addVueRender('Vue_StationsMounts', '#station-mounts', $props);
+?>
+
+<div id="station-mounts"></div>

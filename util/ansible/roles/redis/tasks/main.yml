@@ -1,8 +1,20 @@
 ---
-  - name: Install Redis
-    apt: package="{{ item }}" state=latest
-    with_items:
-     - redis-server
+- name: Add Redis PPA repository
+  apt_repository:
+    repo: "ppa:chris-lea/redis-server"
+    update_cache: yes
 
-  - name: Restart Redis service
-    service: name="redis" state=restarted
+- name: Install Redis
+  apt:
+    name: redis-server
+    state: latest
+
+- name: Enable and restart all core services
+  service:
+    name: "{{ item }}"
+    enabled: yes
+    state: restarted
+  ignore_errors: True
+  with_items:
+    - "redis-server"
+    - "redis"

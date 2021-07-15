@@ -4,9 +4,10 @@
     name: "{{ item }}"
     enabled: yes
     state: restarted
+  ignore_errors: True
   with_items:
-   - "influxdb"
-   - "mysql"
-   - "php7.2-fpm"
-   - "nginx"
-   - "redis"
+    - "mysql"
+    - "php8.0-fpm"
+    - "nginx"
+    - "redis-server"
+    - "redis"

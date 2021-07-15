@@ -6,28 +6,20 @@ if [[ $EUID -ne 0 ]]; then
 fi
 
 # Run system update first
-chmod a+x update.sh
-./update.sh
-
 if [ ! -f ./docker-compose.yml ]; then
     cp ./docker-compose.sample.yml ./docker-compose.yml
 fi
+if [ ! -f ./azuracast.env ]; then
+    cp ./azuracast.sample.env ./azuracast.env
+fi
 
-# Dump MySQL data into fixtures folder
-MYSQL_USERNAME=`awk -F "=" '/db_username/ {print $2}' app/env.ini | tr -d ' '`
-MYSQL_PASSWORD=`awk -F "=" '/db_password/ {print $2}' app/env.ini | tr -d ' '`
+BASE_DIR=`pwd`
 
-mysqldump --add-drop-table -u$MYSQL_USERNAME -p$MYSQL_PASSWORD azuracast > util/fixtures/01_docker_migration.sql
+# Create backup from existing installation.
+chmod a+x bin/console
+./bin/console azuracast:backup --exclude-media migration.zip
 
-read -n 1 -s -r -p "MySQL exported. Press any key to continue (Export InfluxDB)..."
-
-# Dump InfluxDB data
-mkdir -p /var/azuracast/migration
-
-influxd backup /var/azuracast/migration
-influxd backup -database stations /var/azuracast/migration
-
-read -n 1 -s -r -p "InfluxDB exported. Press any key to continue (Install Docker)..."
+read -n 1 -s -r -p "Database backed up. Press any key to continue (Install Docker)..."
 
 # Install Docker
 wget -qO- https://get.docker.com/ | sh
@@ -38,27 +30,33 @@ sudo chmod +x /usr/local/bin/docker-compose
 sudo sh -c "curl -L https://raw.githubusercontent.com/docker/compose/${COMPOSE_VERSION}/contrib/completion/bash/docker-compose > /etc/bash_completion.d/docker-compose"
 
 # Pull Docker images
-docker-compose pull
+read -n 1 -s -r -p "Docker installed. Press any key to continue (Uninstall Ansible AzuraCast)..."
 
-docker-compose -f docker-compose.yml -f docker-compose.migrate.yml run --rm migrate_influx
-
-read -n 1 -s -r -p "InfluxDB data migrated to Docker. Press any key to continue (Uninstall Traditional AzuraCast)..."
-
-# Run traditional uninstaller
+# Run Ansible uninstaller
 chmod a+x uninstall.sh
 ./uninstall.sh
 
 read -n 1 -s -r -p "Uninstall complete. Press any key to continue (Install AzuraCast in Docker)..."
 
-# Run Docker AzuraCast-specific installer
-docker-compose -f docker-compose.yml -f docker-compose.migrate.yml run --rm migrate_stations
-docker-compose -f docker-compose.yml -f docker-compose.migrate.yml run --rm cli azuracast_install
+# Copy override file.
+cp docker-compose.migrate.yml docker-compose.override.yml
 
 # Spin up Docker
+docker-compose pull
+sleep 5
+
+# Run restore op
+chmod a+x docker.sh
+
+# Set appropriate permissions on the stations directory
+chown -R 1000 /var/azuracast/stations
+
+docker-compose run --rm --user="azuracast" web azuracast_restore migration.zip
 docker-compose up -d
 
-# Docker cleanup
-docker-compose rm -f
+read -n 1 -s -r -p "Docker is running. Press any key to continue (cleanup)..."
 
-docker volume prune -f
-docker rmi $(docker images | grep "none" | awk '/ / { print $3 }')
+# Codebase cleanup
+find -maxdepth 1 ! -name . ! -name docker-compose.yml ! -name docker-compose.override.yml \
+     ! -name docker.sh ! -name .env ! -name azuracast.env ! -name plugins \
+     -exec rm -rv {} \;

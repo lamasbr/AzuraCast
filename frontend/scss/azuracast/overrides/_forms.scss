@@ -1,0 +1,31 @@
+input, textarea {
+  &.text-preformatted {
+    font-family: Menlo,Monaco,Consolas,"Courier New",monospace;
+  }
+}
+
+.form {
+  fieldset {
+    margin-bottom: 1rem;
+
+    div.fieldset-legend,
+    legend.col-form-label {
+      border-bottom: 2px dotted;
+      margin-bottom: 10px;
+    }
+
+    .form-group {
+      & > label {
+        margin-bottom: .5rem!important;
+      }
+
+      &:last-child {
+        margin-bottom: 0;
+      }
+    }
+  }
+
+  & > fieldset:last-of-type {
+    margin-bottom: 0;
+  }
+}

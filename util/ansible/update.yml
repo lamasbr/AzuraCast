@@ -1,27 +1,32 @@
 ---
-- hosts: all
-  become: true
-  vars:
-    util_base: "{{ playbook_dir | dirname }}"
-    www_base: "{{ util_base | dirname }}"
-    app_base: "{{ www_base | dirname }}"
-    tmp_base: "{{ app_base }}/www_tmp"
-    app_env: "production"
-    update_mode: true
-    update_revision: 1
+- hosts : all
+  become : true
+  vars :
+    util_base : "{{ playbook_dir | dirname }}"
+    www_base : "{{ util_base | dirname }}"
+    app_base : "{{ www_base | dirname }}"
+    tmp_base : "{{ app_base }}/www_tmp"
+    app_env : "production"
+    update_mode : true
+    update_revision : 1
 
-  roles:
+  environment :
+    DEBIAN_FRONTEND : noninteractive
+
+  roles :
     - init
     - azuracast-config
-    - { role: azuracast-radio, when: update_revision|int < 19 }
-    - { role: supervisord, when: update_revision|int < 13 }
-    - { role: mariadb, when: update_revision|int < 15 }
-    - { role: nginx, when: update_revision|int < 23 }
-    - { role: redis, when: update_revision|int < 14 }
-    - { role: php, when: update_revision|int < 20 }
+    - { role : azuracast-radio, when : update_revision|int < 64 }
+    - { role : supervisord, when : update_revision|int < 13 }
+    - { role : mariadb, when : update_revision|int < 63 }
+    - { role : nginx, when : update_revision|int < 60 }
+    - { role : redis, when : update_revision|int < 57 }
+    - { role : php, when : update_revision|int < 62 }
     - composer
-    - { role: influxdb, when: update_revision|int < 10 }
-    - { role: ufw, when: update_revision|int < 12 }
-    - { role: services, when: update_revision|int < 13 }
-    - { role: azuracast-cron, when: update_revision|int < 2 }
+    - { role : influxdb, when : update_revision|int < 58 }
+    - { role : ufw, when : update_revision|int < 12 }
+    - { role : dbip, when : update_revision|int < 51 }
+    - { role : services, when : update_revision|int < 13 }
+    - { role : azuracast-cron, when : update_revision|int < 48 }
+    - azuracast-build
     - azuracast-setup

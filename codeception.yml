@@ -1,57 +1,40 @@
 actor: Tester
 paths:
-    tests: tests
-    log: tests/_output
-    data: tests/_data
-    support: tests/_support
-    envs: tests/_envs
+  tests: tests
+  log: tests/_output
+  data: tests/_data
+  support: tests/_support
+  envs: tests/_envs
+
+bootstrap: _bootstrap.php
 settings:
-    bootstrap: _bootstrap.php
-    colors: true
-    memory_limit: 1024M
-    error_level: "E_ALL & ~E_NOTICE & ~E_STRICT & ~E_DEPRECATED"
+  colors: true
+  memory_limit: 1024M
+  error_level: "E_ALL & ~E_NOTICE & ~E_STRICT & ~E_DEPRECATED"
 extensions:
-    enabled:
-        - Codeception\Extension\RunFailed
+  enabled:
+    - Codeception\Extension\RunFailed
 modules:
-coverage:
-  enabled: true
-  include:
-   - app/*
-  exclude:
-   # Loaded before tests
-   - app/bootstrap.php
-   - app/bootstrap/**.php
-   - app/src/App/Tests/Module.php
-   - app/src/App/Doctrine/EntityManagerFactory.php
-  
-   # Not used in entire application
-   - app/**/*.conf.sample.php
-   - app/src/App/Crypto.php
-   - app/src/App/Messenger.php
-   - app/src/App/Forms/Element/Recaptcha.php
-   - app/src/App/Paginator/Doctrine.php
-   - app/src/App/Doctrine/Platform/*.php
-   - app/src/App/Doctrine/Paginate/*.php
+coverage :
+  enabled : true
+  include :
+    - src/*
+  exclude :
+    # Application bootstrapping
+    - src/AppFactory.php
+    - src/EventDispatcher.php
+    - src/Exception.php
+    - src/Plugins.php
 
-   # Used in application, but not used in tests
-   - app/src/AzuraCast/Radio/Frontend/ShoutCast2.php
-   - app/src/AzuraCast/Console/Command/*.php
-   - app/src/App/Doctrine/Logger/EchoSQL.php
-   - app/src/App/Session/Temporary.php
-   - app/src/App/Console/Command/*.php
-   - app/src/Entity/Fixture/*
-   - app/src/Entity/Migration/*
-   - app/locale/**/*
-   - app/locale/*
-   - app/templates/system/error_general.phtml
-  
-   # Exceptions
-   - app/src/App/Exception.php
-   - app/src/App/Exception/*.php
-   - app/src/App/Mvc/ErrorHandler.php
+    # Used in application, but not used in tests
+    - src/Radio/Frontend/ShoutCast2.php
+    - src/Console/*.php
+    - src/Console/Command/*.php
+    - src/Entity/Fixture/*
+    - src/Entity/Migration/*
+    - src/Service/IpGeolocator/GeoLite.php
+    - src/RateLimit.php
 
-   # Used in application, but not detected properly by the coverage tool :(
-   - app/config/*.conf.php
-   - app/config/**/*.conf.php
-   - app/**/routes.php
+    # Exceptions
+    - src/Exception/*.php
+    - src/Mvc/ErrorHandler.php

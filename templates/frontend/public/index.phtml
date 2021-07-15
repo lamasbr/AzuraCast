@@ -1,0 +1,81 @@
+<?php
+/**
+ * @var \App\Entity\Station $station
+ * @var \App\Customization $customization
+ */
+
+$this->layout(
+    'minimal',
+    [
+        'page_class' => 'station-' . $station->getShortName(),
+        'title' => $this->e($station->getName()),
+    ]
+);
+
+$props = [
+    'stationName' => $station->getName(),
+    'enableRequests' => $station->getEnableRequests(),
+    'autoplay' => $autoplay,
+    'downloadPlaylistUri' => (string)$router->named(
+        'public:playlist',
+        ['station_id' => $station->getShortName(), 'format' => 'pls']
+    ),
+    'requestListUri' => (string)$router->named('api:requests:list', ['station_id' => $station->getId()]),
+    'customFields' => $customFields,
+    'initialNowPlaying' => $nowplaying,
+    'showAlbumArt' => !$customization->hideAlbumArt(),
+];
+
+if ($customization->useWebSocketsForNowPlaying()) {
+    $props['useNchan'] = true;
+    $props['nowPlayingUri'] = '/api/live/nowplaying/' . urlencode($station->getShortName());
+} else {
+    $props['useNchan'] = false;
+    $props['nowPlayingUri'] = (string)$router->named('api:nowplaying:index', ['station_id' => $station->getId()]);
+}
+
+/** @var \App\Assets $assets */
+$assets
+    ->addVueRender('Vue_PublicFullPlayer', '#public-radio-player', $props);
+
+// Register PWA service worker
+$swJsRoute = (string)$router->named('public:sw');
+
+$assets->addInlineJs(
+    <<<JS
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', function() {
+        navigator.serviceWorker.register('${swJsRoute}');
+      });
+    }
+    JS
+);
+
+$this->push('head');
+?>
+<link rel="manifest" href="<?=(string)$router->fromHere('public:manifest')?>">
+
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="apple-mobile-web-app-title" content="<?=$this->e($station->getName())?>">
+
+<meta property="og:title" content="<?=$this->e($station->getName())?>">
+<meta property="og:url" content="<?=$this->e($station->getUrl())?>">
+<meta property="og:image" content="<?=$defaultAlbumArt?>">
+
+<meta property="twitter:card" content="player">
+<meta property="twitter:player" content="<?=(string)$router->named(
+    'public:index',
+    ['station_id' => $station->getShortName(), 'embed' => 'social'],
+    [],
+    true
+)?>">
+<meta property="twitter:player:width" content="400">
+<meta property="twitter:player:height" content="125">
+<?php
+$this->end();
+?>
+
+<div id="public-radio-player">
+    Loading...
+</div>

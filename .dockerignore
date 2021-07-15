@@ -1,0 +1,17 @@
+# Files in the root directory
+**
+!.git
+!composer.*
+!src
+!bin
+!config
+!resources/locale/compiled
+!util/docker/web
+!util/openapi.php
+!web
+!templates
+!plugins
+!crowdin.yaml
+!docker-compose.sample.yml
+!sample.env
+!azuracast.sample.env

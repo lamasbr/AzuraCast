@@ -1,0 +1,19 @@
+<?php
+/**
+ * @var \App\Assets $assets
+ * @var array $charts
+ */
+
+$this->layout('main', ['title' => __('Statistics Overview'), 'manual' => true]);
+
+$props = [
+    'chartsUrl' => (string)$router->fromHere('api:stations:reports:overview-charts'),
+    'bestAndWorstUrl' => (string)$router->fromHere('api:stations:reports:best-and-worst'),
+    'mostPlayedUrl' => (string)$router->fromHere('api:stations:reports:most-played'),
+];
+
+$assets
+    ->addVueRender('Vue_StationsReportsOverview', '#vue-reports-overview', $props);
+?>
+
+<div id="vue-reports-overview"></div>

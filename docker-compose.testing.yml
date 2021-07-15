@@ -1,14 +1,12 @@
-version: '2.2'
+version : '2.2'
 
-services:
-  web:
-    volumes:
-      - .:/var/azuracast/www
-
-  cli:
-    environment:
-      APPLICATION_ENV: "testing"
-
-  nginx:
-    volumes:
+services :
+  web :
+    build :
+      context : .
+    environment :
+      APPLICATION_ENV : 'testing'
+      LOG_LEVEL : 'debug'
+    volumes :
+      - ./vendor:/var/azuracast/www/vendor
       - .:/var/azuracast/www

@@ -1,0 +1,14 @@
+<?php
+/**
+ * @var \App\Form\Form $form
+ * @var \App\Assets $assets
+ */
+
+$assets
+    ->load('codemirror_css')
+    ->addInlineJs($this->fetch('admin/branding/index.js'), 99);
+
+echo $this->fetch('system/form_page', [
+    'title' => __('Custom Branding'),
+    'form' => $form,
+]);
